@@ -72,9 +72,10 @@
     gap: 12px;
   }
 
-  .logo-area svg {
+  .logo-area img {
     width: 45px;
     height: 45px;
+    object-fit: contain;
   }
 
   .logo-area h1 {
@@ -284,7 +285,7 @@
   }
 
   /* Toast */
-  .toast {
+  .toast-message {
     position: fixed;
     bottom: 30px;
     left: 50%;
@@ -301,7 +302,7 @@
     border-left: 3px solid #E31B23;
   }
 
-  .toast.show {
+  .toast-message.show {
     opacity: 1;
   }
 
@@ -330,10 +331,7 @@
   <!-- Header -->
   <div class="kiosk-header">
     <div class="logo-area">
-      <svg viewBox="0 0 100 100" fill="none" width="45" height="45">
-        <rect x="32" y="40" width="36" height="32" rx="10" fill="#E31B23"/>
-        <path d="M45 58 L55 58 M50 53 L50 63" stroke="white" stroke-width="2"/>
-      </svg>
+      <img src="images/rands-logo.png" alt="Rands Logo">
       <h1>Rands Kiosk</h1>
     </div>
     <div class="time-area" id="liveTime">--:-- --</div>
@@ -391,7 +389,7 @@
   </div>
 </div>
 
-<div id="toast" class="toast"></div>
+<div id="toast" class="toast-message"></div>
 
 <script>
   // ==================== LIVE TIME ====================
@@ -403,32 +401,17 @@
   updateTime();
   setInterval(updateTime, 1000);
   
-  // ==================== ACTION HANDLERS ====================
+  // ==================== TOAST FUNCTION ====================
   function showToast(message) {
-    let toast = document.getElementById('kioskToast');
-    if (!toast) {
-      toast = document.createElement('div');
-      toast.id = 'kioskToast';
-      toast.style.position = 'fixed';
-      toast.style.bottom = '30px';
-      toast.style.left = '50%';
-      toast.style.transform = 'translateX(-50%)';
-      toast.style.background = '#1F1F1F';
-      toast.style.color = 'white';
-      toast.style.padding = '0.8rem 1.5rem';
-      toast.style.borderRadius = '40px';
-      toast.style.fontSize = '0.85rem';
-      toast.style.zIndex = '2000';
-      toast.style.borderLeft = '3px solid #E31B23';
-      toast.style.opacity = '0';
-      toast.style.transition = 'opacity 0.2s';
-      toast.style.pointerEvents = 'none';
-      document.body.appendChild(toast);
-    }
+    const toast = document.getElementById('toast');
     toast.textContent = message;
-    toast.style.opacity = '1';
-    setTimeout(() => { toast.style.opacity = '0'; }, 2500);
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 2500);
   }
+  
+  // ==================== ACTION HANDLERS ====================
   
   // Start New Order
   document.getElementById('startOrderBtn').addEventListener('click', () => {
@@ -477,18 +460,13 @@
   // ==================== ANIMATION ON LOAD ====================
   const cards = document.querySelectorAll('.action-card');
   cards.forEach((card, index) => {
-    card.style.animation = `fadeInUp 0.6s ease forwards ${index * 0.1}s`;
+    card.style.animation = `cardFadeIn 0.6s ease forwards ${index * 0.1 + 0.2}s`;
     card.style.opacity = '0';
     card.style.transform = 'translateY(30px)';
   });
   
   const style = document.createElement('style');
   style.textContent = `
-    .action-card {
-      animation: cardFadeIn 0.6s ease forwards;
-      opacity: 0;
-      transform: translateY(30px);
-    }
     @keyframes cardFadeIn {
       to {
         opacity: 1;
@@ -497,10 +475,6 @@
     }
   `;
   document.head.appendChild(style);
-  
-  cards.forEach((card, index) => {
-    card.style.animationDelay = `${index * 0.1 + 0.2}s`;
-  });
   
   console.log('%c🔴 RANDS SELF-SERVE KIOSK | Ready for orders', 'color: #E31B23; font-size: 13px; font-weight: bold;');
 </script>
