@@ -534,7 +534,6 @@
     </div>
     
     <div class="action-grid">
-      <!-- Start New Order - Instant redirect, no popup -->
       <div class="action-card" id="startOrderBtn">
         <div class="card-icon">🍺</div>
         <h2 class="card-title">Start New Order</h2>
@@ -542,7 +541,6 @@
         <div class="card-btn">Order Now →</div>
       </div>
       
-      <!-- Scan QR to Collect - Beautiful modal popup -->
       <div class="action-card" id="collectOrderBtn">
         <div class="card-icon">📱</div>
         <h2 class="card-title">Collect Order</h2>
@@ -550,7 +548,6 @@
         <div class="card-btn">Scan QR →</div>
       </div>
 
-      <!-- Event Tickets - Redirects to kiosk-tickets.html -->
       <div class="action-card" id="eventTicketsBtn">
         <div class="card-icon">🎟️</div>
         <h2 class="card-title">Event Tickets</h2>
@@ -574,7 +571,6 @@
   </div>
 </div>
 
-<!-- Install Banner -->
 <div id="installBanner" class="install-banner" style="display: none;">
   <span>📱</span>
   <span>Install Rands Kiosk app for faster access!</span>
@@ -582,7 +578,6 @@
   <button id="closeInstallBtn" class="close-install">✕</button>
 </div>
 
-<!-- Beautiful Modal Component -->
 <div id="beautifulModal" class="modal-overlay">
   <div class="beautiful-modal">
     <div class="modal-icon" id="modalIcon">✅</div>
@@ -633,9 +628,10 @@
     localStorage.setItem('installDismissed', 'true');
   });
 
+  // FIXED: Removed the slash for GitHub Pages compatibility
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js')
+      navigator.serviceWorker.register('sw.js')
         .then(registration => {
           console.log('Service Worker registered successfully:', registration.scope);
         })
@@ -748,12 +744,12 @@
   updateTime();
   setInterval(updateTime, 1000);
   
-  // ==================== START ORDER - INSTANT REDIRECT (NO POPUP) ====================
+  // ==================== START ORDER - INSTANT REDIRECT ====================
   function startOrderHandler() {
     window.location.href = 'kiosk-menu.html';
   }
   
-  // ==================== COLLECT ORDER - BEAUTIFUL MODAL ====================
+  // ==================== COLLECT ORDER ====================
   async function collectOrderHandler() {
     const qrCode = await showPromptModal(
       'Scan QR Code',
@@ -769,12 +765,12 @@
     }
   }
   
-  // ==================== EVENT TICKETS - DIRECT REDIRECT ====================
+  // ==================== EVENT TICKETS ====================
   function eventTicketsHandler() {
     window.location.href = 'kiosk-tickets.html';
   }
   
-  // ==================== QUICK ACCESS - INSTANT REDIRECT ====================
+  // ==================== QUICK ACCESS ====================
   function quickAccessHandler(menu) {
     window.location.href = `kiosk-menu.html?category=${menu}`;
   }
@@ -810,13 +806,12 @@
   `;
   document.head.appendChild(styleSheet);
   
-  // Handle logo image fallback
   const logoImg = document.querySelector('.logo-circle img');
   if (logoImg && logoImg.complete && logoImg.naturalWidth === 0) {
     logoImg.onerror();
   }
   
-  console.log('%c🎟️ RANDS KIOSK — Latest Version | PWA Ready | Instant Redirects | Beautiful Modals', 'color: #E31B23; font-size: 14px; font-weight: bold;');
+  console.log('%c🎟️ RANDS KIOSK — GitHub Pages Ready! | https://mziwonkekabuyaphi.github.io/kiosk/', 'color: #E31B23; font-size: 14px; font-weight: bold;');
 </script>
 </body>
 </html>
