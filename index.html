@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Rands Kiosk | Start Ordering</title>
+<title>Rands Kiosk | Order & Tickets</title>
 <style>
   * {
     margin: 0;
@@ -53,7 +53,7 @@
     100% { transform: rotate(360deg); }
   }
 
-  /* Header */
+  /* Header with larger circular logo */
   .kiosk-header {
     position: relative;
     z-index: 10;
@@ -72,16 +72,43 @@
     gap: 12px;
   }
 
-  .logo-area img {
-    width: 45px;
-    height: 45px;
+  /* Bigger circular logo styling */
+  .logo-circle {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(145deg, #E31B23, #B3131A);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 3px rgba(227,27,35,0.3), 0 8px 20px rgba(0,0,0,0.3);
+    transition: transform 0.2s ease;
+  }
+  
+  .logo-circle:hover {
+    transform: scale(1.02);
+  }
+  
+  .logo-circle img {
+    width: 48px;
+    height: 48px;
     object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+  }
+  
+  /* Fallback text inside circle if image missing */
+  .logo-circle span {
+    font-size: 2rem;
+    font-weight: 800;
+    color: white;
+    letter-spacing: 1px;
   }
 
   .logo-area h1 {
     color: #E31B23;
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     font-weight: 700;
+    letter-spacing: -0.5px;
   }
 
   .time-area {
@@ -89,7 +116,7 @@
     padding: 0.5rem 1rem;
     border-radius: 40px;
     color: #D1D5DB;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     font-family: monospace;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(227,27,35,0.3);
@@ -143,7 +170,7 @@
     margin: 0 auto;
   }
 
-  /* Action Cards - Now with 3 cards */
+  /* Action Cards - 3 cards (Order, Collect, Tickets) */
   .action-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -209,6 +236,7 @@
     font-size: 0.85rem;
     color: #9CA3AF;
     margin-bottom: 1rem;
+    line-height: 1.4;
   }
 
   .card-btn {
@@ -306,83 +334,110 @@
     opacity: 1;
   }
 
-  /* Modal Styles for Refund */
-  .modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.9);
-    z-index: 2000;
-    justify-content: center;
-    align-items: center;
+  /* Event Ticket Hub Styles */
+  .events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
   }
-
-  .modal.active {
-    display: flex;
+  
+  .event-card {
+    background: #111;
+    border-radius: 32px;
+    overflow: hidden;
+    border: 1px solid rgba(227,27,35,0.3);
+    transition: transform 0.2s, border-color 0.2s;
   }
-
-  .modal-content {
-    background: #1A1A1A;
-    border-radius: 48px;
-    max-width: 500px;
-    width: 90%;
-    padding: 2rem;
-    border: 1px solid #E31B23;
-    animation: fadeInUp 0.3s ease;
-  }
-
-  .modal-content h2 {
-    color: #E31B23;
-    margin-bottom: 1rem;
-  }
-
-  .modal-content input, .modal-content select {
-    width: 100%;
-    padding: 1rem;
-    margin: 0.5rem 0 1rem;
-    background: #2A2A2A;
-    border: 1px solid #3A3A3A;
-    border-radius: 16px;
-    color: white;
-    font-size: 1rem;
-  }
-
-  .modal-content input:focus {
-    outline: none;
+  
+  .event-card:hover {
+    transform: translateY(-4px);
     border-color: #E31B23;
   }
-
-  .modal-content label {
+  
+  .event-badge {
+    background: #E31B23;
+    padding: 0.6rem;
+    text-align: center;
+    font-weight: bold;
+    color: white;
+    font-size: 0.8rem;
+  }
+  
+  .event-content {
+    padding: 1.5rem;
+  }
+  
+  .event-emoji {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .event-name {
+    color: white;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  
+  .event-datetime {
     color: #9CA3AF;
+    margin: 0.5rem 0;
     font-size: 0.85rem;
   }
-
-  .modal-buttons {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1.5rem;
+  
+  .event-price {
+    color: #E31B23;
+    font-weight: bold;
+    margin: 0.5rem 0;
   }
-
-  .modal-btn {
-    flex: 1;
-    padding: 0.8rem;
-    border-radius: 40px;
-    border: none;
-    cursor: pointer;
-    font-weight: 600;
-  }
-
-  .modal-btn.confirm {
+  
+  .buy-ticket-btn {
     background: #E31B23;
+    border: none;
+    width: 100%;
+    margin-top: 1rem;
+    padding: 0.6rem;
+    border-radius: 40px;
     color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
   }
-
-  .modal-btn.cancel {
-    background: #2A2A2A;
-    color: #9CA3AF;
+  
+  .buy-ticket-btn:hover {
+    background: #B3131A;
+  }
+  
+  .ticket-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .back-to-kiosk {
+    background: rgba(30,30,30,0.9);
+    border: 1px solid #E31B23;
+    padding: 0.5rem 1.2rem;
+    border-radius: 40px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .back-to-kiosk:hover {
+    background: #E31B23;
+  }
+  
+  .ticket-info-footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding: 1rem;
+    background: rgba(227,27,35,0.1);
+    border-radius: 48px;
   }
 
   /* Responsive */
@@ -394,11 +449,16 @@
     .card-title { font-size: 1.2rem; }
     .kiosk-main { padding: 1.5rem; }
     .kiosk-header { padding: 1rem; }
+    .logo-circle { width: 55px; height: 55px; }
+    .logo-circle img { width: 36px; height: 36px; }
+    .logo-area h1 { font-size: 1.3rem; }
   }
 
   @media (max-width: 480px) {
     .hero-title { font-size: 1.5rem; }
     .action-grid { grid-template-columns: 1fr; }
+    .logo-circle { width: 50px; height: 50px; }
+    .logo-circle img { width: 32px; height: 32px; }
   }
 </style>
 </head>
@@ -407,10 +467,12 @@
 <div class="kiosk-container">
   <div class="kiosk-bg"></div>
   
-  <!-- Header -->
+  <!-- Header with LARGER CIRCULAR LOGO -->
   <div class="kiosk-header">
     <div class="logo-area">
-      <img src="images/rands-logo.png" alt="Rands Logo">
+      <div class="logo-circle" id="brandLogo">
+        <img src="images/rands-logo.png" alt="Rands Logo" onerror="this.onerror=null; this.parentElement.innerHTML='<span>R</span>';">
+      </div>
       <h1>Rands Kiosk</h1>
     </div>
     <div class="time-area" id="liveTime">--:-- --</div>
@@ -420,12 +482,12 @@
   <div class="kiosk-main">
     <div class="hero-section">
       <h1 class="hero-title">Welcome to Rands Kiosk</h1>
-      <p class="hero-subtitle">Tap, order, collect — it's that simple. Experience fast and cashless ordering.</p>
+      <p class="hero-subtitle">Tap, order, collect — and grab event tickets! Fast & cashless.</p>
     </div>
     
-    <!-- Action Cards - NOW WITH 3 CARDS (Removed Check Balance, Changed Icons for Booze) -->
+    <!-- Action Cards - Order, Collect, EVENT TICKETS -->
     <div class="action-grid">
-      <!-- Start New Order - Changed to Drink/Booze icon -->
+      <!-- Start New Order -->
       <div class="action-card" id="startOrderBtn">
         <div class="card-icon">🍺</div>
         <h2 class="card-title">Start New Order</h2>
@@ -441,73 +503,33 @@
         <div class="card-btn">Scan QR →</div>
       </div>
 
-      <!-- REFUND BUTTON - Keep -->
-      <div class="action-card" id="refundBtn">
-        <div class="card-icon">💰</div>
-        <h2 class="card-title">Request Refund</h2>
-        <p class="card-description">Refund to eWallet, VVIP tag, or card</p>
-        <div class="card-btn">Refund →</div>
+      <!-- EVENT TICKETS CARD -->
+      <div class="action-card" id="eventTicketsBtn">
+        <div class="card-icon">🎟️</div>
+        <h2 class="card-title">Event Tickets</h2>
+        <p class="card-description">Buy event tickets · Print instantly or get via WhatsApp</p>
+        <div class="card-btn">Get Tickets →</div>
       </div>
     </div>
     
-    <!-- Quick Access - Updated for booze/drinks -->
+    <!-- Quick Access - Removed Daily Specials, only drinks categories -->
     <div class="quick-access">
       <div class="quick-title">QUICK ACCESS</div>
       <div class="quick-buttons">
         <button class="quick-btn" data-menu="beer">🍺 Beers & Ciders</button>
         <button class="quick-btn" data-menu="wine">🍷 Wine & Champagne</button>
         <button class="quick-btn" data-menu="spirits">🥃 Spirits & Cocktails</button>
-        <button class="quick-btn" data-menu="specials">🔥 Daily Specials</button>
       </div>
     </div>
   </div>
   
   <!-- Footer -->
   <div class="kiosk-footer">
-    <span class="footer-brand">Rands Venue Management</span> · #SeeYourVibe
+    <span class="footer-brand">Rands Venue Management</span> · #SeeYourVibe · Events & Hospitality
   </div>
 </div>
 
-<!-- Refund Modal -->
-<div id="refundModal" class="modal">
-  <div class="modal-content">
-    <h2>💰 Request Refund</h2>
-    <p style="color: #9CA3AF; font-size: 0.85rem; margin-bottom: 1rem;">Please fill in the details below</p>
-    
-    <label>Refund Method *</label>
-    <select id="refundMethod">
-      <option value="ewallet">eWallet (Mobile Money)</option>
-      <option value="vvip">VVIP Tag / Cashless Card</option>
-      <option value="original">Original Payment Method</option>
-    </select>
-    
-    <div id="identifierGroup">
-      <label>eWallet Phone Number *</label>
-      <input type="tel" id="identifier" placeholder="071 234 5678">
-    </div>
-    
-    <label>Order Number / Receipt ID *</label>
-    <input type="text" id="orderId" placeholder="e.g., RNDS-12345">
-    
-    <label>Refund Amount (R) *</label>
-    <input type="number" id="amount" placeholder="0.00" step="0.01">
-    
-    <label>Reason for Refund *</label>
-    <select id="reason">
-      <option>Damaged/Missing item</option>
-      <option>Wrong order received</option>
-      <option>Double charged</option>
-      <option>Order cancelled</option>
-      <option>Other</option>
-    </select>
-    
-    <div class="modal-buttons">
-      <button class="modal-btn cancel" onclick="closeRefundModal()">Cancel</button>
-      <button class="modal-btn confirm" onclick="submitRefund()">Submit Refund</button>
-    </div>
-  </div>
-</div>
-
+<!-- Toast message container -->
 <div id="toast" class="toast-message"></div>
 
 <script>
@@ -521,165 +543,214 @@
   setInterval(updateTime, 1000);
   
   // ==================== TOAST FUNCTION ====================
-  function showToast(message) {
+  function showToast(message, duration = 3000) {
     const toast = document.getElementById('toast');
     toast.textContent = message;
     toast.classList.add('show');
     setTimeout(() => {
       toast.classList.remove('show');
-    }, 3000);
+    }, duration);
   }
   
-  // ==================== REFUND MODAL FUNCTIONS ====================
-  function openRefundModal() {
-    document.getElementById('refundModal').classList.add('active');
-  }
-  
-  function closeRefundModal() {
-    document.getElementById('refundModal').classList.remove('active');
-    // Reset form
-    document.getElementById('refundMethod').value = 'ewallet';
-    document.getElementById('identifier').value = '';
-    document.getElementById('orderId').value = '';
-    document.getElementById('amount').value = '';
-    updateIdentifierField();
-  }
-  
-  function updateIdentifierField() {
-    const method = document.getElementById('refundMethod').value;
-    const group = document.getElementById('identifierGroup');
-    
-    if (method === 'ewallet') {
-      group.innerHTML = '<label>eWallet Phone Number *</label><input type="tel" id="identifier" placeholder="071 234 5678">';
-    } else if (method === 'vvip') {
-      group.innerHTML = '<label>VVIP Tag ID *</label><input type="text" id="identifier" placeholder="Scan or enter tag ID">';
-    } else {
-      group.innerHTML = '<label>Card Last 4 Digits *</label><input type="text" id="identifier" placeholder="****" maxlength="4">';
-    }
-  }
-  
-  // Staff authorization for refunds
-  function authorizeRefund(amount) {
-    // For amounts over R200, require staff PIN
-    if (amount > 200) {
-      const staffPin = prompt('⚠️ Refund over R200 requires staff authorization.\nEnter staff PIN:');
-      const validPins = ['1234', '0000', '9999']; // In production, verify with backend
-      
-      if (validPins.includes(staffPin)) {
-        showToast('✅ Staff authorized');
-        return true;
-      } else {
-        showToast('❌ Unauthorized. Refund requires staff approval for amounts over R200');
-        return false;
-      }
-    }
-    return true;
-  }
-  
-  function submitRefund() {
-    const method = document.getElementById('refundMethod').value;
-    const identifier = document.getElementById('identifier')?.value;
-    const orderId = document.getElementById('orderId').value;
-    const amount = parseFloat(document.getElementById('amount').value);
-    const reason = document.getElementById('reason').value;
-    
-    // Validation
-    if (!identifier || !orderId || !amount || amount <= 0) {
-      showToast('❌ Please fill all required fields');
-      return;
-    }
-    
-    if (method === 'ewallet') {
-      const phone = identifier.replace(/\s/g, '');
-      if (!/^\d{10}$/.test(phone)) {
-        showToast('❌ Please enter a valid 10-digit phone number');
-        return;
-      }
-    }
-    
-    if (method === 'original' && identifier.length !== 4) {
-      showToast('❌ Please enter last 4 digits of your card');
-      return;
-    }
-    
-    // Staff authorization for large refunds
-    if (!authorizeRefund(amount)) {
-      closeRefundModal();
-      return;
-    }
-    
-    // Process refund
-    showToast('⏳ Processing refund request...');
-    
-    // Simulate API call
+  // ==================== EVENT TICKETS REDIRECT ====================
+  function redirectToEventTickets() {
+    showToast("🎟️ Loading event tickets — print instantly or WhatsApp delivery available", 1800);
     setTimeout(() => {
-      const success = Math.random() > 0.1; // 90% success rate for demo
-      const refNumber = 'REF' + Date.now() + Math.floor(Math.random() * 1000);
-      
-      if (success) {
-        showToast(`✅ Refund approved! R${amount.toFixed(2)} will be sent to ${method}\nRef: ${refNumber}`);
-        console.log(`Refund processed: ${method} | ${identifier} | R${amount} | Order: ${orderId} | Reason: ${reason}`);
-        closeRefundModal();
-        
-        // Optional: Print receipt
-        setTimeout(() => {
-          if (confirm('Would you like to print a refund receipt?')) {
-            showToast('🖨️ Printing receipt...');
-          }
-        }, 1000);
-      } else {
-        showToast(`❌ Refund failed. Please contact support or try again.`);
-      }
-    }, 2000);
+      openTicketHub();
+    }, 500);
   }
   
-  // ==================== ACTION HANDLERS ====================
+  // Open Ticket Hub with event listings, print & WhatsApp options
+  function openTicketHub() {
+    const mainContainer = document.querySelector('.kiosk-main');
+    const heroSection = document.querySelector('.hero-section');
+    const actionGrid = document.querySelector('.action-grid');
+    const quickAccess = document.querySelector('.quick-access');
+    
+    mainContainer.style.transition = 'opacity 0.2s';
+    mainContainer.style.opacity = '0';
+    
+    setTimeout(() => {
+      // Build enhanced ticket page with print & WhatsApp delivery info
+      const ticketHTML = `
+        <div class="ticket-page" style="animation: fadeInUp 0.5s ease;">
+          <div class="ticket-page-header">
+            <h2 style="color: white; font-size: 1.8rem; background: linear-gradient(135deg, #E31B23, #FF8A8A); -webkit-background-clip: text; background-clip: text; color: transparent;">🎫 Upcoming Events</h2>
+            <button class="back-to-kiosk" id="backToKioskBtn">← Back to Kiosk</button>
+          </div>
+          
+          <!-- Delivery options banner -->
+          <div style="background: rgba(227,27,35,0.15); border-radius: 60px; padding: 0.8rem 1.2rem; margin-bottom: 2rem; display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; backdrop-filter: blur(4px);">
+            <span style="color: #E31B23; font-weight: 500;">🖨️ Print instantly at kiosk</span>
+            <span style="color: #E31B23; font-weight: 500;">📱 Delivered via WhatsApp</span>
+            <span style="color: #E31B23; font-weight: 500;">📧 Email copy included</span>
+          </div>
+          
+          <div class="events-grid">
+            <!-- Event 1 -->
+            <div class="event-card">
+              <div class="event-badge">🔥 SOLD OUT SOON</div>
+              <div class="event-content">
+                <div class="event-emoji">🎤</div>
+                <div class="event-name">Neon Vibes Fest</div>
+                <div class="event-datetime">Sat, 25 May 2025 · 8PM</div>
+                <div class="event-price">From R250</div>
+                <button class="buyTicketBtn" data-event="Neon Vibes Fest" data-price="250">Select Tickets</button>
+              </div>
+            </div>
+            <!-- Event 2 -->
+            <div class="event-card">
+              <div class="event-badge" style="background:#1a1a1a; color:#E31B23;">🎧 ELECTRONIC</div>
+              <div class="event-content">
+                <div class="event-emoji">🍾</div>
+                <div class="event-name">Rooftop Pool Party</div>
+                <div class="event-datetime">Sun, 2 June 2025 · 2PM</div>
+                <div class="event-price">R180 - R450</div>
+                <button class="buyTicketBtn" data-event="Rooftop Pool Party" data-price="180">Select Tickets</button>
+              </div>
+            </div>
+            <!-- Event 3 -->
+            <div class="event-card">
+              <div class="event-badge" style="background:#0f0f0f; color:#FFD966;">⭐ VIP EXPERIENCE</div>
+              <div class="event-content">
+                <div class="event-emoji">🥂</div>
+                <div class="event-name">Champagne & Jazz Night</div>
+                <div class="event-datetime">Fri, 7 June 2025 · 7PM</div>
+                <div class="event-price">R550 (incl. welcome drink)</div>
+                <button class="buyTicketBtn" data-event="Champagne & Jazz Night" data-price="550">Select Tickets</button>
+              </div>
+            </div>
+            <!-- Event 4 -->
+            <div class="event-card">
+              <div class="event-badge" style="background:#2c0f0f;">🏆 COMEDY NIGHT</div>
+              <div class="event-content">
+                <div class="event-emoji">😂</div>
+                <div class="event-name">Laugh Factory Live</div>
+                <div class="event-datetime">Wed, 12 June 2025 · 8:30PM</div>
+                <div class="event-price">R120 - R200</div>
+                <button class="buyTicketBtn" data-event="Laugh Factory Live" data-price="120">Select Tickets</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="ticket-info-footer">
+            <p style="color: #D1D5DB;">🎟️ Secure your spot — choose <strong>Print instantly</strong> at kiosk or <strong>WhatsApp delivery</strong> after payment. Fast & contactless.</p>
+            <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 0.8rem; flex-wrap: wrap;">
+              <span style="background: #1F1F1F; padding: 0.2rem 0.8rem; border-radius: 20px; font-size: 0.7rem;">🖨️ Instant print receipt</span>
+              <span style="background: #1F1F1F; padding: 0.2rem 0.8rem; border-radius: 20px; font-size: 0.7rem;">📲 WhatsApp ticket delivery</span>
+              <span style="background: #1F1F1F; padding: 0.2rem 0.8rem; border-radius: 20px; font-size: 0.7rem;">✅ QR code entry</span>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      if (heroSection && actionGrid && quickAccess) {
+        heroSection.style.display = 'none';
+        actionGrid.style.display = 'none';
+        quickAccess.style.display = 'none';
+      }
+      
+      let ticketContainer = document.getElementById('dynamicTicketHub');
+      if (!ticketContainer) {
+        ticketContainer = document.createElement('div');
+        ticketContainer.id = 'dynamicTicketHub';
+        mainContainer.appendChild(ticketContainer);
+      }
+      ticketContainer.innerHTML = ticketHTML;
+      ticketContainer.style.display = 'block';
+      
+      // Attach buy ticket event with delivery options (Print instantly / WhatsApp)
+      document.querySelectorAll('.buyTicketBtn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const eventName = btn.getAttribute('data-event');
+          const price = btn.getAttribute('data-price');
+          
+          // Show delivery method selection
+          const deliveryChoice = confirm(`🎫 ${eventName} - R${price}\n\nSelect delivery method:\n• Click OK for PRINT INSTANTLY (kiosk printout)\n• Click Cancel for WHATSAPP delivery`);
+          
+          if (deliveryChoice) {
+            showToast(`🖨️ ${eventName} ticket selected. Printing instantly at kiosk...`, 2500);
+            setTimeout(() => {
+              showToast(`✅ Ticket printed! Collect from printer. Enjoy ${eventName}!`, 3000);
+            }, 1500);
+          } else {
+            // WhatsApp delivery flow
+            const phone = prompt("📱 Enter your WhatsApp number for ticket delivery (e.g., 0712345678):");
+            if (phone && phone.trim().length >= 9) {
+              showToast(`📲 Ticket for ${eventName} will be sent via WhatsApp to ${phone} within 2 minutes.`, 3500);
+              setTimeout(() => {
+                showToast(`✅ WhatsApp ticket delivered! Show QR at entrance.`, 3000);
+              }, 2000);
+            } else if (phone) {
+              showToast(`⚠️ Invalid number. Please try again or use print option.`, 2500);
+            } else {
+              showToast(`❌ Delivery cancelled.`, 1500);
+            }
+          }
+        });
+      });
+      
+      // Back button restores main kiosk view
+      const backBtn = document.getElementById('backToKioskBtn');
+      if (backBtn) {
+        backBtn.addEventListener('click', () => {
+          if (heroSection) heroSection.style.display = 'block';
+          if (actionGrid) actionGrid.style.display = 'grid';
+          if (quickAccess) quickAccess.style.display = 'block';
+          if (ticketContainer) ticketContainer.style.display = 'none';
+          mainContainer.style.opacity = '1';
+          showToast('🔙 Returned to main kiosk menu', 1500);
+        });
+      }
+      
+      mainContainer.style.opacity = '1';
+    }, 200);
+  }
   
-  // Start New Order
-  document.getElementById('startOrderBtn').addEventListener('click', () => {
+  // ==================== COLLECT ORDER HANDLER ====================
+  function collectOrderHandler() {
+    showToast('📱 Opening QR scanner... Please present your QR code');
+    const qrCode = prompt('Enter your Order QR Code (or scan):');
+    if (qrCode && qrCode.trim() !== "") {
+      showToast(`✅ Order ${qrCode} found! Ready for pickup. Please show at collection point.`);
+    } else if (qrCode === "") {
+      showToast('⚠️ No QR code entered. Please try again.');
+    }
+  }
+  
+  // ==================== START ORDER (MENU) ====================
+  function startOrderHandler() {
     showToast('🍺 Opening drinks menu... Redirecting to ordering page');
     setTimeout(() => {
       window.location.href = 'kiosk-menu.html';
     }, 800);
-  });
+  }
   
-  // Collect Order (QR Scanner)
-  document.getElementById('collectOrderBtn').addEventListener('click', () => {
-    showToast('📱 Opening QR scanner... Please present your QR code');
-    const qrCode = prompt('Enter your Order QR Code (or scan):');
-    if (qrCode) {
-      showToast(`✅ Order ${qrCode} found! Ready for pickup.`);
-    }
-  });
+  // ==================== QUICK ACCESS BUTTONS (only drinks now) ====================
+  function quickAccessHandler(menu) {
+    showToast(`🍽️ Loading ${menu} menu...`);
+    setTimeout(() => {
+      window.location.href = `kiosk-menu.html?category=${menu}`;
+    }, 500);
+  }
   
-  // REFUND BUTTON HANDLER
-  document.getElementById('refundBtn').addEventListener('click', () => {
-    openRefundModal();
-  });
+  // ==================== ATTACH EVENT LISTENERS ====================
+  document.getElementById('startOrderBtn').addEventListener('click', startOrderHandler);
+  document.getElementById('collectOrderBtn').addEventListener('click', collectOrderHandler);
+  const eventBtn = document.getElementById('eventTicketsBtn');
+  if (eventBtn) {
+    eventBtn.addEventListener('click', redirectToEventTickets);
+  }
   
-  // Update identifier field when refund method changes
-  document.getElementById('refundMethod').addEventListener('change', updateIdentifierField);
-  
-  // Quick Access Buttons - Updated for booze
+  // Quick Access Buttons (only 3 buttons now)
   document.querySelectorAll('.quick-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const menu = btn.getAttribute('data-menu');
-      showToast(`🍽️ Loading ${menu} menu...`);
-      setTimeout(() => {
-        window.location.href = `kiosk-menu.html?category=${menu}`;
-      }, 500);
+      quickAccessHandler(menu);
     });
   });
   
-  // Close modal when clicking outside
-  window.onclick = function(event) {
-    const modal = document.getElementById('refundModal');
-    if (event.target === modal) {
-      closeRefundModal();
-    }
-  }
-  
-  // ==================== ANIMATION ON LOAD ====================
+  // ==================== ANIMATIONS ON LOAD ====================
   const cards = document.querySelectorAll('.action-card');
   cards.forEach((card, index) => {
     card.style.animation = `cardFadeIn 0.6s ease forwards ${index * 0.1 + 0.2}s`;
@@ -687,8 +758,8 @@
     card.style.transform = 'translateY(30px)';
   });
   
-  const style = document.createElement('style');
-  style.textContent = `
+  const styleSheet = document.createElement('style');
+  styleSheet.textContent = `
     @keyframes cardFadeIn {
       to {
         opacity: 1;
@@ -696,9 +767,15 @@
       }
     }
   `;
-  document.head.appendChild(style);
+  document.head.appendChild(styleSheet);
   
-  console.log('%c🔴 RANDS SELF-SERVE KIOSK | Ready for orders & refunds', 'color: #E31B23; font-size: 13px; font-weight: bold;');
+  // Handle logo image fallback
+  const logoImg = document.querySelector('.logo-circle img');
+  if (logoImg && logoImg.complete && logoImg.naturalWidth === 0) {
+    logoImg.onerror();
+  }
+  
+  console.log('%c🎟️ RANDS KIOSK — Event Tickets | Print instantly & WhatsApp delivery ready | Daily Specials removed', 'color: #E31B23; font-size: 14px; font-weight: bold;');
 </script>
 </body>
 </html>
