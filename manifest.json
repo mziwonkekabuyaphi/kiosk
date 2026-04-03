@@ -1,8 +1,8 @@
 {
-  "name": "Rands Kiosk",
-  "short_name": "RandsKiosk",
+  "name": "Rands Kiosk - Self-Service Ordering",
+  "short_name": "Rands Kiosk",
   "description": "Self-service kiosk for ordering drinks and event tickets",
-  "start_url": "/",
+  "start_url": ".",
   "display": "standalone",
   "theme_color": "#E31B23",
   "background_color": "#0A0A0A",
