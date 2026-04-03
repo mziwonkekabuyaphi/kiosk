@@ -3,81 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Rands Kiosk | Order Food, Drinks & Tickets</title>
-<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<title>Rands Kiosk | Order & Tickets</title>
 <style>
   * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
   }
+
   body {
-    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #0A0A0A;
     min-height: 100vh;
     overflow-x: hidden;
-    transition: background-color 0.3s ease, color 0.3s ease;
   }
-  body.dark-mode {
-    background: #0A0A0A;
-  }
-  body.dark-mode .kiosk-menu {
-    background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%);
-  }
-  body.dark-mode .menu-header, body.dark-mode .category-nav {
-    background: rgba(10, 10, 10, 0.95);
-  }
-  body.dark-mode .product-card, body.dark-mode .spirit-category-card, body.dark-mode .ticket-card {
-    background: rgba(17, 17, 17, 0.9);
-    border: 1px solid rgba(227,27,35,0.2);
-  }
-  body.dark-mode .product-name, body.dark-mode .spirit-category-name, body.dark-mode .ticket-type {
-    color: white;
-  }
-  body.dark-mode .cart-sidebar, body.dark-mode .spirit-sidebar {
-    background: #111111;
-  }
-  body.dark-mode .category-tab {
-    color: white;
-    border-color: rgba(255,255,255,0.3);
-  }
-  body.light-mode {
-    background: #F5F5F5;
-  }
-  body.light-mode .kiosk-menu {
-    background: linear-gradient(135deg, #FFFFFF 0%, #F0F0F0 100%);
-  }
-  body.light-mode .menu-header, body.light-mode .category-nav {
-    background: rgba(255, 255, 255, 0.95);
-  }
-  body.light-mode .product-card, body.light-mode .spirit-category-card, body.light-mode .ticket-card {
-    background: rgba(255, 255, 255, 0.95);
-    border: 1px solid rgba(227,27,35,0.2);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  }
-  body.light-mode .product-name, body.light-mode .spirit-category-name, body.light-mode .ticket-type {
-    color: #1F2937;
-  }
-  body.light-mode .cart-sidebar, body.light-mode .spirit-sidebar {
-    background: #FFFFFF;
-  }
-  body.light-mode .category-tab {
-    color: black;
-    border-color: rgba(0,0,0,0.2);
-  }
-  .category-tab:hover, .category-tab.active {
-    background: #E31B23;
-    border-color: #E31B23;
-    color: white !important;
-  }
-  .kiosk-menu {
+
+  /* Main Kiosk Container */
+  .kiosk-container {
     min-height: 100vh;
+    background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%);
     position: relative;
-    display: flex;
-    flex-direction: column;
+    overflow-x: hidden;
   }
-  .menu-bg {
+
+  /* Animated Background */
+  .kiosk-bg {
     position: fixed;
     top: 0;
     left: 0;
@@ -86,840 +36,738 @@
     pointer-events: none;
     z-index: 0;
   }
-  body.dark-mode .menu-bg::before {
+
+  .kiosk-bg::before {
     content: '';
     position: absolute;
     width: 150%;
     height: 150%;
     top: -25%;
     left: -25%;
-    background: radial-gradient(circle at 30% 40%, rgba(227,27,35,0.05), transparent 70%);
-    animation: slowDrift 40s infinite linear;
+    background: radial-gradient(circle at 30% 40%, rgba(227,27,35,0.08), transparent 70%);
+    animation: slowRotate 30s infinite linear;
   }
-  body.light-mode .menu-bg::before {
-    content: '';
-    position: absolute;
-    width: 150%;
-    height: 150%;
-    top: -25%;
-    left: -25%;
-    background: radial-gradient(circle at 30% 40%, rgba(227,27,35,0.03), transparent 70%);
-    animation: slowDrift 40s infinite linear;
+
+  @keyframes slowRotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
-  @keyframes slowDrift {
-    0% { transform: rotate(0deg) scale(1); }
-    100% { transform: rotate(360deg) scale(1.2); }
-  }
-  .menu-header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    backdrop-filter: blur(20px);
-    padding: 1rem 2rem;
+
+  /* Header with larger circular logo */
+  .kiosk-header {
+    position: relative;
+    z-index: 10;
+    padding: 1.5rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
     gap: 1rem;
+    border-bottom: 1px solid rgba(227,27,35,0.2);
   }
+
   .logo-area {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
   }
-  /* ENHANCED LOGO: LARGER + CIRCLE CORNERS (rounded-full) */
-  .logo-image {
-    width: 90px;          /* increased from 60px */
-    height: 90px;         /* fixed height for perfect circle */
-    max-height: 90px;
-    object-fit: cover;    /* ensures image fills circle nicely */
-    border-radius: 50%;   /* makes it fully circular */
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
-    border: 2px solid rgba(227,27,35,0.3);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    background: #fff;     /* fallback background */
+
+  /* Bigger circular logo styling */
+  .logo-circle {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(145deg, #E31B23, #B3131A);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 3px rgba(227,27,35,0.3), 0 8px 20px rgba(0,0,0,0.3);
+    transition: transform 0.2s ease;
   }
-  .logo-image:hover {
+  
+  .logo-circle:hover {
     transform: scale(1.02);
-    box-shadow: 0 8px 20px rgba(227,27,35,0.3);
-    border-color: #E31B23;
   }
-  /* for responsive screens, keep circular but slightly smaller if needed */
-  @media (max-width: 768px) { 
-    .logo-image {
-      width: 70px;
-      height: 70px;
-    }
-    .logo-area h1 {
-      font-size: 1.4rem;
-    }
+  
+  .logo-circle img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
   }
+  
+  /* Fallback text inside circle if image missing */
+  .logo-circle span {
+    font-size: 2rem;
+    font-weight: 800;
+    color: white;
+    letter-spacing: 1px;
+  }
+
   .logo-area h1 {
-    font-size: 1.9rem;
     color: #E31B23;
+    font-size: 1.6rem;
+    font-weight: 700;
     letter-spacing: -0.5px;
   }
-  .header-controls {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-  .theme-toggle {
-    background: rgba(227,27,35,0.15);
-    border: 1px solid rgba(227,27,35,0.4);
-    padding: 0.6rem 1rem;
+
+  .time-area {
+    background: rgba(0,0,0,0.5);
+    padding: 0.5rem 1rem;
     border-radius: 40px;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .theme-toggle:hover {
-    background: #E31B23;
-    color: white;
-  }
-  .cart-btn {
-    background: rgba(227,27,35,0.15);
-    border: 1px solid rgba(227,27,35,0.4);
-    padding: 0.6rem 1.2rem;
-    border-radius: 40px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .cart-btn:hover {
-    background: #E31B23;
-    transform: scale(1.02);
-    color: white;
-  }
-  .cart-price {
-    font-weight: 700;
+    color: #D1D5DB;
     font-size: 0.9rem;
+    font-family: monospace;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(227,27,35,0.3);
   }
-  .category-nav {
-    position: sticky;
-    top: 70px;
-    z-index: 90;
-    backdrop-filter: blur(20px);
-    padding: 0.8rem 2rem;
-    display: flex;
-    gap: 0.8rem;
-    overflow-x: auto;
-    scrollbar-width: thin;
-  }
-  .category-nav::-webkit-scrollbar {
-    height: 3px;
-  }
-  .category-nav::-webkit-scrollbar-thumb {
-    background: #E31B23;
-    border-radius: 10px;
-  }
-  .category-tab {
-    background: transparent;
-    border: 1px solid;
-    padding: 0.5rem 1.2rem;
-    border-radius: 40px;
-    font-size: 0.85rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-  .menu-main {
+
+  /* Main Content */
+  .kiosk-main {
     position: relative;
     z-index: 10;
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;
-    flex: 1;
-    display: flex;
-    gap: 2rem;
-  }
-  .tickets-container {
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
-  }
-  .ticket-card {
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-    transition: all 0.4s ease;
-    position: relative;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    min-height: calc(100vh - 80px);
     display: flex;
     flex-direction: column;
-  }
-  .ticket-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 20px 40px rgba(227, 6, 19, 0.2);
-    border-color: rgba(227, 6, 19, 0.3);
-  }
-  .ticket-card.general-ticket {
-    background: linear-gradient(145deg, #1E3A8A, #1E40AF);
-    border: 1px solid rgba(255,255,255,0.25);
-  }
-  body.light-mode .ticket-card.general-ticket {
-    background: linear-gradient(145deg, #3B82F6, #2563EB);
-    box-shadow: 0 10px 25px -5px rgba(59,130,246,0.4);
-  }
-  .ticket-card.general-ticket .ticket-header {
-    background: rgba(0,0,0,0.2);
-  }
-  .ticket-card.general-ticket .ticket-body {
-    background: rgba(0,0,0,0.15);
-    border-top: 1px solid rgba(255,255,255,0.2);
-  }
-  .ticket-card.general-ticket .ticket-footer {
-    border-top: 1px solid rgba(255,255,255,0.2);
-  }
-  .ticket-card.general-ticket .ticket-type,
-  .ticket-card.general-ticket .ticket-price,
-  .ticket-card.general-ticket .ticket-description,
-  .ticket-card.general-ticket .features-list li,
-  .ticket-card.general-ticket .quantity-display {
-    color: white;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-  }
-  .ticket-card.general-ticket .feature-icon i {
-    color: white;
-  }
-  .ticket-card.general-ticket .buy-btn {
-    background: white;
-    color: #1E3A8A;
-    font-weight: 800;
-    border: none;
-  }
-  .ticket-card.general-ticket .buy-btn:hover {
-    background: #F3F4F6;
-    transform: scale(1.02);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-  }
-  .ticket-card.general-ticket .quantity-btn {
-    background: rgba(255,255,255,0.2);
-    color: white;
-  }
-  .ticket-card.general-ticket .quantity-btn:hover {
-    background: white;
-    color: #1E3A8A;
-  }
-  .ticket-card.vip-experience {
-    background: linear-gradient(145deg, #800020, #5e0018);
-    border: 1px solid rgba(255,215,0,0.3);
-  }
-  body.light-mode .ticket-card.vip-experience {
-    background: linear-gradient(145deg, #9b2c3d, #6a1e2b);
-    box-shadow: 0 10px 25px -5px rgba(128,0,32,0.5);
-  }
-  .ticket-card.vip-experience .ticket-header {
-    background: rgba(0,0,0,0.25);
-  }
-  .ticket-card.vip-experience .ticket-body {
-    background: rgba(0,0,0,0.2);
-    border-top: 1px solid rgba(255,215,0,0.3);
-  }
-  .ticket-card.vip-experience .ticket-footer {
-    border-top: 1px solid rgba(255,215,0,0.3);
-  }
-  .ticket-card.vip-experience .ticket-type,
-  .ticket-card.vip-experience .ticket-price,
-  .ticket-card.vip-experience .ticket-description,
-  .ticket-card.vip-experience .features-list li,
-  .ticket-card.vip-experience .quantity-display {
-    color: #FFF5E6;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.4);
-  }
-  .ticket-card.vip-experience .feature-icon i {
-    color: #FFD966;
-  }
-  .ticket-card.vip-experience .buy-btn {
-    background: #FFD966;
-    color: #5e0018;
-    font-weight: 800;
-    border: none;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-  }
-  .ticket-card.vip-experience .buy-btn:hover {
-    background: #FFE494;
-    transform: scale(1.02);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-  }
-  .ticket-card.vip-experience .quantity-btn {
-    background: rgba(255,255,200,0.2);
-    color: #FFD966;
-  }
-  .ticket-card.vip-experience .quantity-btn:hover {
-    background: #FFD966;
-    color: #5e0018;
-  }
-  .ticket-card.paradise {
-    background: linear-gradient(145deg, #0F5C5F, #1E7F6E);
-    border: 1px solid rgba(255,255,200,0.3);
-  }
-  body.light-mode .ticket-card.paradise {
-    background: linear-gradient(145deg, #1C9E8F, #117F6F);
-    box-shadow: 0 10px 25px -5px rgba(28,158,143,0.4);
-  }
-  .ticket-card.paradise .ticket-header {
-    background: rgba(0,0,0,0.2);
-  }
-  .ticket-card.paradise .ticket-body {
-    background: rgba(0,0,0,0.15);
-    border-top: 1px solid rgba(255,245,200,0.25);
-  }
-  .ticket-card.paradise .ticket-footer {
-    border-top: 1px solid rgba(255,245,200,0.25);
-  }
-  .ticket-card.paradise .ticket-type,
-  .ticket-card.paradise .ticket-price,
-  .ticket-card.paradise .ticket-description,
-  .ticket-card.paradise .features-list li,
-  .ticket-card.paradise .quantity-display {
-    color: #FEF9E6;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-  }
-  .ticket-card.paradise .feature-icon i {
-    color: #FFE7A3;
-  }
-  .ticket-card.paradise .buy-btn {
-    background: #FFE7A3;
-    color: #0F5C5F;
-    font-weight: 800;
-    border: none;
-  }
-  .ticket-card.paradise .buy-btn:hover {
-    background: #FFF2CC;
-    transform: scale(1.02);
-  }
-  .ticket-card.paradise .quantity-btn {
-    background: rgba(255,255,200,0.2);
-    color: #FFE7A3;
-  }
-  .ticket-card.paradise .quantity-btn:hover {
-    background: #FFE7A3;
-    color: #0F5C5F;
-  }
-  .ticket-card.see-you-vibe {
-    background: linear-gradient(145deg, #E85D04, #F48C06);
-    border: 1px solid rgba(255,200,100,0.4);
-  }
-  body.light-mode .ticket-card.see-you-vibe {
-    background: linear-gradient(145deg, #F77F00, #FC9E2F);
-    box-shadow: 0 10px 25px -5px rgba(248,127,0,0.5);
-  }
-  .ticket-card.see-you-vibe .ticket-header {
-    background: rgba(0,0,0,0.2);
-  }
-  .ticket-card.see-you-vibe .ticket-body {
-    background: rgba(0,0,0,0.15);
-    border-top: 1px solid rgba(255,230,150,0.3);
-  }
-  .ticket-card.see-you-vibe .ticket-footer {
-    border-top: 1px solid rgba(255,230,150,0.3);
-  }
-  .ticket-card.see-you-vibe .ticket-type,
-  .ticket-card.see-you-vibe .ticket-price,
-  .ticket-card.see-you-vibe .ticket-description,
-  .ticket-card.see-you-vibe .features-list li,
-  .ticket-card.see-you-vibe .quantity-display {
-    color: #FFF2E0;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-  }
-  .ticket-card.see-you-vibe .feature-icon i {
-    color: #FFDEA5;
-  }
-  .ticket-card.see-you-vibe .buy-btn {
-    background: #FFDEA5;
-    color: #B23C00;
-    font-weight: 800;
-    border: none;
-  }
-  .ticket-card.see-you-vibe .buy-btn:hover {
-    background: #FFEBC2;
-    transform: scale(1.02);
-  }
-  .ticket-card.see-you-vibe .quantity-btn {
-    background: rgba(255,255,220,0.2);
-    color: #FFDEA5;
-  }
-  .ticket-card.see-you-vibe .quantity-btn:hover {
-    background: #FFDEA5;
-    color: #B23C00;
-  }
-  .ticket-card.wonderland {
-    background: linear-gradient(145deg, #4C1D95, #7C3AED);
-    border: 1px solid rgba(200,150,255,0.3);
-  }
-  body.light-mode .ticket-card.wonderland {
-    background: linear-gradient(145deg, #6D28D9, #8B5CF6);
-    box-shadow: 0 10px 25px -5px rgba(109,40,217,0.4);
-  }
-  .ticket-card.wonderland .ticket-header {
-    background: rgba(0,0,0,0.2);
-  }
-  .ticket-card.wonderland .ticket-body {
-    background: rgba(0,0,0,0.15);
-    border-top: 1px solid rgba(200,180,255,0.3);
-  }
-  .ticket-card.wonderland .ticket-footer {
-    border-top: 1px solid rgba(200,180,255,0.3);
-  }
-  .ticket-card.wonderland .ticket-type,
-  .ticket-card.wonderland .ticket-price,
-  .ticket-card.wonderland .ticket-description,
-  .ticket-card.wonderland .features-list li,
-  .ticket-card.wonderland .quantity-display {
-    color: #F3E8FF;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-  }
-  .ticket-card.wonderland .feature-icon i {
-    color: #D9B8FF;
-  }
-  .ticket-card.wonderland .buy-btn {
-    background: #D9B8FF;
-    color: #2E1065;
-    font-weight: 800;
-    border: none;
-  }
-  .ticket-card.wonderland .buy-btn:hover {
-    background: #E9D4FF;
-    transform: scale(1.02);
-  }
-  .ticket-card.wonderland .quantity-btn {
-    background: rgba(220,200,255,0.2);
-    color: #D9B8FF;
-  }
-  .ticket-card.wonderland .quantity-btn:hover {
-    background: #D9B8FF;
-    color: #2E1065;
-  }
-  .ticket-header {
-    padding: 25px 20px;
-    position: relative;
-    overflow: hidden;
-  }
-  .ticket-type {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-bottom: 8px;
-    letter-spacing: 1px;
-  }
-  .ticket-price {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin: 15px 0;
-  }
-  .ticket-description {
-    font-size: 0.95rem;
-    line-height: 1.6;
-    opacity: 0.9;
-    margin-top: 10px;
-  }
-  .ticket-body {
-    padding: 25px 20px;
-    flex: 1;
-  }
-  .features-list {
-    list-style: none;
-  }
-  .features-list li {
-    padding: 10px 0;
-    border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
-    display: flex;
-    align-items: center;
-    font-size: 0.9rem;
-  }
-  .feature-icon {
-    margin-right: 12px;
-    width: 20px;
-    text-align: center;
-  }
-  .quantity-selector {
-    display: flex;
-    align-items: center;
     justify-content: center;
-    margin: 15px 0 10px;
-    background: rgba(0,0,0,0.2);
-    border-radius: 40px;
-    padding: 5px;
   }
-  .quantity-btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: none;
-    font-size: 1.2rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .quantity-display {
-    font-size: 1.2rem;
-    font-weight: 600;
-    min-width: 50px;
+
+  /* Hero Section */
+  .hero-section {
     text-align: center;
+    margin-bottom: 3rem;
+    animation: fadeInUp 0.8s ease;
   }
-  .ticket-footer {
-    padding: 20px;
-    text-align: center;
-  }
-  .buy-btn {
-    border: none;
-    padding: 14px 20px;
-    border-radius: 50px;
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    width: 100%;
-    letter-spacing: 0.5px;
-    transition: all 0.3s ease;
-  }
-  .popular-badge {
-    position: absolute;
-    top: 20px;
-    right: -35px;
-    background: #E31B23;
-    color: white;
-    padding: 8px 40px;
-    font-weight: 700;
-    font-size: 0.9rem;
-    transform: rotate(45deg);
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-    z-index: 20;
-  }
-  .spirit-sidebar {
-    width: 280px;
-    flex-shrink: 0;
-    backdrop-filter: blur(10px);
-    border-radius: 32px;
-    padding: 1.5rem;
-    border: 1px solid rgba(227,27,35,0.2);
-    height: fit-content;
-    position: sticky;
-    top: 140px;
-  }
-  .spirit-sidebar-title {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #E31B23;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid rgba(227,27,35,0.3);
-  }
-  .spirit-categories {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  .spirit-category-btn {
-    background: transparent;
-    border: none;
-    padding: 0.8rem 1rem;
-    text-align: left;
-    font-size: 0.9rem;
-    font-weight: 500;
-    border-radius: 40px;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: inherit;
-  }
-  .spirit-category-btn:hover, .spirit-category-btn.active {
-    background: rgba(227,27,35,0.2);
-    color: #E31B23;
-  }
-  .product-grid {
-    flex: 1;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.8rem;
-    margin-bottom: 2rem;
-  }
-  .product-card {
-    backdrop-filter: blur(10px);
-    border-radius: 32px;
-    overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-    cursor: pointer;
-    position: relative;
-  }
-  .product-card:hover {
-    transform: translateY(-5px);
-    border-color: #E31B23;
-    box-shadow: 0 15px 30px rgba(227,27,35,0.2);
-  }
-  .product-image {
-    height: 160px;
-    background: linear-gradient(135deg, #2A2A2A, #1F1F1F);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 4rem;
-  }
-  body.light-mode .product-image {
-    background: linear-gradient(135deg, #F0F0F0, #E5E5E5);
-  }
-  .product-info {
-    padding: 1.2rem;
-  }
-  .product-name {
-    font-size: 1.2rem;
-    font-weight: 700;
-    margin-bottom: 0.3rem;
-  }
-  .product-desc {
-    font-size: 0.7rem;
-    margin-bottom: 0.8rem;
-    color: #9CA3AF;
-  }
-  .product-price {
-    font-size: 1.3rem;
-    font-weight: 800;
-    color: #E31B23;
-  }
-  .add-btn {
-    position: absolute;
-    bottom: 1rem;
-    right: 1rem;
-    background: #E31B23;
-    width: 40px;
-    height: 40px;
-    border-radius: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    border: none;
-  }
-  .add-btn:hover {
-    background: #B3131A;
-    transform: scale(1.1);
-  }
-  .cart-sidebar {
-    position: fixed;
-    right: 0;
-    top: 0;
-    width: 420px;
-    height: 100vh;
-    z-index: 200;
-    transform: translateX(100%);
-    transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
-    box-shadow: -5px 0 30px rgba(0,0,0,0.5);
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-  }
-  .cart-sidebar.open { transform: translateX(0); }
-  .cart-header { padding: 1.2rem 1.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(227,27,35,0.2); position: sticky; top: 0; background: inherit; z-index: 1; backdrop-filter: blur(8px); }
-  .close-cart { background: none; border: none; font-size: 1.5rem; cursor: pointer; }
-  .cart-items { flex: none; overflow-y: visible; padding: 1rem; }
-  .cart-item { display: flex; gap: 0.8rem; padding: 0.8rem; border-radius: 20px; margin-bottom: 0.8rem; align-items: center; background: rgba(227,27,35,0.1); }
-  .cart-item-info { flex: 1; }
-  .cart-item-name { font-weight: 600; font-size: 0.85rem; }
-  .cart-item-price { color: #E31B23; font-size: 0.7rem; }
-  .cart-item-qty { display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.2); border-radius: 30px; padding: 0.2rem 0.5rem; }
-  .qty-control { border: none; width: 26px; height: 26px; border-radius: 50%; font-weight: bold; cursor: pointer; background: #E31B23; color: white; }
-  .cart-total { padding: 1rem 1.5rem; border-top: 1px solid rgba(227,27,35,0.2); }
-  .total-row { display: flex; justify-content: space-between; font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
-  .payment-section { padding: 1rem 1.5rem; border-top: 1px solid rgba(227,27,35,0.2); border-bottom: 1px solid rgba(227,27,35,0.2); }
-  .payment-title { font-size: 0.75rem; font-weight: 600; color: #9CA3AF; margin-bottom: 0.5rem; }
-  .payment-options { display: flex; gap: 0.8rem; margin-bottom: 0.8rem; }
-  .payment-option { flex: 1; background: rgba(227,27,35,0.1); border: 1px solid rgba(227,27,35,0.3); border-radius: 40px; padding: 0.6rem; text-align: center; cursor: pointer; font-size: 0.75rem; }
-  .payment-option:hover, .payment-option.selected { background: #E31B23; color: white; }
-  .wallet-method-buttons { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
-  .wallet-action-btn { flex: 1; background: rgba(227,27,35,0.1); border: 1px solid rgba(227,27,35,0.3); border-radius: 40px; padding: 0.5rem; text-align: center; cursor: pointer; font-size: 0.7rem; }
-  .wallet-input-group { margin-top: 0.8rem; }
-  .wallet-input-group input { width: 100%; background: rgba(0,0,0,0.2); border: 1px solid rgba(227,27,35,0.3); border-radius: 40px; padding: 0.6rem 1rem; font-size: 0.75rem; outline: none; margin-bottom: 0.5rem; }
-  .voucher-input { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
-  .voucher-input input { flex: 1; background: rgba(0,0,0,0.2); border: 1px solid rgba(227,27,35,0.3); border-radius: 40px; padding: 0.6rem 1rem; font-size: 0.75rem; outline: none; }
-  .apply-voucher { background: #E31B23; border: none; border-radius: 40px; padding: 0.6rem 1rem; color: white; cursor: pointer; }
-  .delivery-section { padding: 1rem 1.5rem; border-bottom: 1px solid rgba(227,27,35,0.2); }
-  .delivery-title { font-size: 0.75rem; font-weight: 600; color: #9CA3AF; margin-bottom: 0.5rem; }
-  .delivery-options { display: flex; gap: 0.8rem; }
-  .delivery-option { flex: 1; background: rgba(227,27,35,0.1); border: 1px solid rgba(227,27,35,0.3); border-radius: 40px; padding: 0.6rem; text-align: center; cursor: pointer; font-size: 0.75rem; }
-  .delivery-option:hover, .delivery-option.selected { background: #E31B23; color: white; }
-  .whatsapp-input { margin-top: 0.5rem; }
-  .whatsapp-input input { width: 100%; background: rgba(0,0,0,0.2); border: 1px solid rgba(227,27,35,0.3); border-radius: 40px; padding: 0.6rem 1rem; font-size: 0.75rem; outline: none; }
-  .checkout-btn { width: calc(100% - 2rem); margin: 1rem; padding: 0.8rem; background: #E31B23; border: none; border-radius: 40px; color: white; font-weight: 600; cursor: pointer; }
-  .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 199; opacity: 0; visibility: hidden; }
-  .cart-overlay.open { opacity: 1; visibility: visible; }
-  .qr-popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s; display: flex; align-items: center; justify-content: center; }
-  .qr-popup-overlay.show { opacity: 1; visibility: visible; }
-  .qr-popup-card { background: white; border-radius: 48px; padding: 2rem; max-width: 450px; width: 85%; text-align: center; animation: popIn 0.4s ease; border-top: 6px solid #E31B23; border-bottom: 6px solid #E31B23; }
-  body.dark-mode .qr-popup-card { background: #1F1F1F; }
-  @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-  .qr-code-container { background: white; padding: 1rem; border-radius: 24px; display: inline-block; margin: 1rem 0; }
-  .qr-code { width: 200px; height: 200px; display: block; margin: 0 auto; }
-  .whatsapp-button { display: inline-flex; align-items: center; gap: 8px; background: #25D366; color: white; padding: 0.8rem 1.5rem; border-radius: 40px; text-decoration: none; font-weight: 600; margin: 1rem 0; }
-  .close-popup-btn { background: #E31B23; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 40px; cursor: pointer; width: 100%; }
-  .scanner-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1100; display: flex; align-items: center; justify-content: center; flex-direction: column; opacity: 0; visibility: hidden; transition: all 0.3s; }
-  .scanner-modal.show { opacity: 1; visibility: visible; }
-  .scanner-container { background: white; border-radius: 32px; padding: 1rem; width: 90%; max-width: 400px; text-align: center; }
-  #qr-reader { width: 100%; margin: 0 auto; }
-  .scanner-close { margin-top: 1rem; background: #E31B23; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 40px; cursor: pointer; }
-  .footer { text-align: center; padding: 1rem; font-size: 0.7rem; color: #6B7280; }
-  .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #1F1F1F; color: white; padding: 0.6rem 1.2rem; border-radius: 40px; font-size: 0.75rem; z-index: 300; opacity: 0; transition: opacity 0.2s; pointer-events: none; border-left: 3px solid #E31B23; }
-  .toast.show { opacity: 1; }
-  .flying-item { position: fixed; z-index: 1000; font-size: 2.2rem; pointer-events: none; transition: all 1.2s cubic-bezier(0.2, 0.9, 0.4, 1.2); filter: drop-shadow(0 0 8px #E31B23); will-change: transform, left, top; }
-  .payment-waiting { text-align: center; background: rgba(0,0,0,0.05); border-radius: 40px; padding: 0.8rem; margin: 0.8rem 0; font-size: 0.8rem; }
-  @media (max-width: 1000px) { .menu-main { flex-direction: column; } .spirit-sidebar { width: 100%; position: static; margin-bottom: 1rem; } .spirit-categories { flex-direction: row; flex-wrap: wrap; } .product-grid { grid-template-columns: repeat(2, 1fr); gap: 1.2rem; } .cart-sidebar { width: 100%; } }
-  @media (max-width: 768px) { 
-    .product-grid, .tickets-container { grid-template-columns: 1fr; }
-    .logo-image { width: 70px; height: 70px; }
-    .logo-area h1 { font-size: 1.3rem; }
-  }
-  .success-redirect-message { position: fixed; bottom: 20px; right: 20px; background: #10B981; color: white; padding: 12px 20px; border-radius: 40px; font-size: 0.9rem; z-index: 1000; animation: slideIn 0.3s ease; }
-  @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-</style>
-</head>
-<body class="light-mode">
-<div class="kiosk-menu">
-  <div class="menu-bg"></div>
 
-  <div class="menu-header">
-    <div class="logo-area">
-      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%23E31B23'/%3E%3Ctext x='50' y='70' font-size='48' text-anchor='middle' fill='white' font-weight='bold'%3ER%3C/text%3E%3C/svg%3E" alt="Rands Kiosk Logo" class="logo-image">
-      <h1>Rands Kiosk</h1>
-    </div>
-    <div class="header-controls">
-      <button class="theme-toggle" id="themeToggleBtn"><span>☀️</span><span>Light</span></button>
-      <div class="cart-btn" id="openCartBtn"><span>🛒</span><span class="cart-price" id="cartPrice">R0</span></div>
-    </div>
-  </div>
-
-  <div class="category-nav">
-    <button class="category-tab active" data-category="all">💫 All</button>
-    <button class="category-tab" data-category="tickets">🎟️ Event Tickets</button>
-    <button class="category-tab" data-category="butcher">🥩 The Butcher</button>
-    <button class="category-tab" data-category="spirits">🥃 Premium Spirits</button>
-    <button class="category-tab" data-category="beer">🍺 Beer & Cider (6pk)</button>
-    <button class="category-tab" data-category="champagne">🥂 Champagne</button>
-    <button class="category-tab" data-category="sparkling">✨ Sparkling Wine</button>
-  </div>
-
-  <div class="menu-main" id="menuMain"></div>
-  <div class="footer">Created by Mziwonke KaBuyaphi</div>
-</div>
-
-<!-- Cart Sidebar -->
-<div class="cart-overlay" id="cartOverlay"></div>
-<div class="cart-sidebar" id="cartSidebar">
-  <div class="cart-header"><h3>🛒 Your Order</h3><button class="close-cart" id="closeCartBtn">✕</button></div>
-  <div class="cart-items" id="cartItems"></div>
-  <div class="cart-total"><div class="total-row"><span>Subtotal</span><span id="cartSubtotal">R0</span></div><div class="total-row" id="discountRow" style="display:none;"><span>Discount</span><span id="discountAmount">-R0</span></div><div class="total-row"><span>Total</span><span id="cartTotal">R0</span></div></div>
-  <div class="payment-section"><div class="payment-title">💳 PAYMENT METHOD</div><div class="payment-options"><div class="payment-option" data-payment="eft">🏦 EFT</div><div class="payment-option" data-payment="1voucher">🎫 1Voucher</div><div class="payment-option" data-payment="wallet">💰 Rands Wallet</div></div><div id="walletExtra" style="display:none;"><div class="wallet-method-buttons"><button id="walletScanBtn" class="wallet-action-btn">📷 Scan QR</button><button id="walletManualBtn" class="wallet-action-btn">✍️ Enter details</button></div><div id="walletManualFields" style="display:none;" class="wallet-input-group"><input type="text" id="walletAccountId" placeholder="Account ID (WhatsApp number)"><input type="password" id="walletPin" maxlength="4" placeholder="PIN" class="pin-input"><div class="wallet-status" id="walletStatus"></div></div><div id="walletScanResult" style="display:none; font-size:0.7rem; margin-top:0.5rem; color:#10B981;"></div><div style="font-size:0.7rem; margin-top:0.5rem; color:#9CA3AF; background:rgba(0,0,0,0.1); padding:0.3rem; border-radius:20px; text-align:center;">🧪 Test wallet: ID <strong>+27761234567</strong> | PIN <strong>1234</strong> | Balance R5000</div></div><div id="voucherContainer" style="display:none;"><div class="voucher-input"><input type="text" id="voucherCode" placeholder="Enter 1Voucher code"><button class="apply-voucher" id="applyVoucherBtn">Apply</button></div><div id="voucherMessage" class="voucher-message"></div></div></div>
-  <div class="delivery-section" id="deliverySection" style="display:none;"><div class="delivery-title">🎫 TICKET DELIVERY</div><div class="delivery-options"><div class="delivery-option" data-delivery="print">🖨️ Print Thermal</div><div class="delivery-option" data-delivery="whatsapp">📱 Send WhatsApp</div></div><div id="whatsappContainer" style="display:none;"><div class="whatsapp-input"><input type="tel" id="whatsappNumber" placeholder="+27 123 456 789"></div></div></div>
-  <div id="walletWaitingMessage" style="display:none; margin: 0 1rem 0.5rem 1rem; background: rgba(227,27,35,0.1); border-radius: 40px; padding: 0.8rem; text-align: center; font-size: 0.8rem;"></div>
-  <button class="checkout-btn" id="checkoutBtn">💰 PAY & COMPLETE ORDER</button>
-</div>
-
-<div id="qrScannerModal" class="scanner-modal"><div class="scanner-container"><div id="qr-reader"></div><button class="scanner-close" id="closeScannerBtn">Cancel</button></div></div>
-<div class="qr-popup-overlay" id="qrPopupOverlay"><div class="qr-popup-card"><div class="qr-popup-title" id="qrPopupTitle">📱 Scan to Send Order</div><div class="qr-popup-message" id="qrPopupMessage">Scan this QR code with your phone to send your order via WhatsApp</div><div class="qr-code-container"><canvas id="qrCodeCanvas" class="qr-code" width="200" height="200"></canvas></div><a href="#" id="whatsappLink" class="whatsapp-button" target="_blank">💬 Open WhatsApp</a><button class="close-popup-btn" id="closeQrPopupBtn">Close</button></div></div>
-<div id="toast" class="toast"></div>
-
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs2-fix/qrcode.min.js"></script>
-<script>
-  // ==================== DATA ====================
-  const spiritProducts = {
-    whisky: [{ id: 101, name: "Johnnie Walker Blue Label", price: 4500, desc: "Ultimate blended Scotch whisky", emoji: "🥃", category: "spirits" }],
-    vodka: [{ id: 105, name: "Belvedere", price: 950, desc: "Polish rye vodka, smooth", emoji: "🍸", category: "spirits" }],
-    rum: [{ id: 109, name: "Diplomatico Reserva", price: 950, desc: "Venezuelan rum, rich & smooth", emoji: "🍹", category: "spirits" }],
-    tequila: [{ id: 113, name: "Don Julio 1942", price: 3200, desc: "Añejo tequila, ultra-premium", emoji: "🍹", category: "spirits" }],
-    cognac: [{ id: 117, name: "Hennessy XO", price: 4200, desc: "Extra Old cognac", emoji: "🥃", category: "spirits" }],
-    liqueur: [{ id: 121, name: "Grand Marnier", price: 850, desc: "Cognac & orange liqueur", emoji: "🍊", category: "spirits" }],
-    moreSpirits: [{ id: 125, name: "Absinthe", price: 1200, desc: "La Fee Verte, high proof", emoji: "🌿", category: "spirits" }]
-  };
-  const allSpirits = Object.values(spiritProducts).flat();
-  const otherProducts = [
-    { id: 4, name: "Prime Ribeye Steak", price: 180, category: "butcher", desc: "300g grass-fed ribeye, aged 21 days", emoji: "🥩", isTicket: false },
-    { id: 5, name: "Wagyu Beef Burger", price: 160, category: "butcher", desc: "200g Wagyu patty, brioche bun", emoji: "🍔", isTicket: false },
-    { id: 6, name: "Lamb Chops", price: 220, category: "butcher", desc: "4 succulent lamb chops with rosemary", emoji: "🍖", isTicket: false },
-    { id: 7, name: "T-Bone Steak", price: 250, category: "butcher", desc: "500g T-bone, grilled to perfection", emoji: "🥩", isTicket: false },
-    { id: 8, name: "Castle Lager 6-Pack", price: 190, category: "beer", desc: "6 x 500ml cans", emoji: "🍺", isTicket: false },
-    { id: 9, name: "Heineken 6-Pack", price: 220, category: "beer", desc: "6 x 500ml cans", emoji: "🍺", isTicket: false },
-    { id: 10, name: "Savanna Dry Cider 6-Pack", price: 210, category: "beer", desc: "6 x 500ml cans", emoji: "🍎", isTicket: false },
-    { id: 11, name: "Corona Extra 6-Pack", price: 230, category: "beer", desc: "6 x 500ml cans", emoji: "🍺", isTicket: false },
-    { id: 12, name: "Moët & Chandon", price: 280, category: "champagne", desc: "Iconic French champagne", emoji: "🥂", isTicket: false, specialCard: "champagne-card" },
-    { id: 13, name: "Veuve Clicquot", price: 320, category: "champagne", desc: "Yellow Label", emoji: "🥂", isTicket: false, specialCard: "champagne-card" },
-    { id: 14, name: "JC Le Roux", price: 120, category: "sparkling", desc: "South African sparkling wine", emoji: "🍾", isTicket: false, specialCard: "sparkling-card" },
-    { id: 15, name: "Graham Beck", price: 150, category: "sparkling", desc: "Premium Cap Classique", emoji: "🍾", isTicket: false, specialCard: "sparkling-card" }
-  ];
-  const ticketProducts = [
-    { id: 201, name: "General Ticket", price: 250, desc: "Standard wristband • General access to all areas.", emoji: "🎫", isTicket: true, features: ["Full event access", "Rands Smart Counter access", "Event wristband", "✗ VIP lounge"], hasQuantity: true, classSlug: "general-ticket" },
-    { id: 202, name: "VIP Experience", price: 500, desc: "Premium wristband • Drinks included • Meet & greet", emoji: "🎫", isTicket: true, features: ["All General benefits", "VIP lounge access", "Complimentary drinks (3)", "Meet & greet with artists"], hasQuantity: true, popular: true, classSlug: "vip-experience" },
-    { id: 203, name: "Paradise", price: 10000, desc: "Luxurious couch • Waiter service • R8,000 Tab • Skip Queue Priority • 15 people", emoji: "🎫", isTicket: true, features: ["Private table with couches", "Dedicated waiter", "R8,000 Tab", "Skip the Queue Priority"], hasQuantity: false, classSlug: "paradise" },
-    { id: 204, name: "#See You Vibe", price: 15000, desc: "Luxury vibe • R13,000 Tab • Skip Queue Priority • 15 people", emoji: "🎫", isTicket: true, features: ["Premium lounge area", "Dedicated host", "R13,000 Tab", "Skip the Queue Priority"], hasQuantity: false, classSlug: "see-you-vibe" },
-    { id: 205, name: "Wonderland", price: 20000, desc: "Ultimate wonderland • R18,000 Tab • VIP parking pass • 15 people", emoji: "🎫", isTicket: true, features: ["Private luxury suite", "Personal concierge", "R18,000 Tab", "VIP parking pass"], hasQuantity: false, classSlug: "wonderland" }
-  ];
-  let cart = [], activeCategory = "all", activeSpiritCategory = "whisky", selectedPayment = "eft", selectedDelivery = "print", voucherApplied = false, voucherDiscount = 0, currentSubtotal = 0, walletAccountId = "", walletPin = "", html5QrCode = null;
-
-  function showToast(msg) { const toast = document.getElementById('toast'); toast.textContent = msg; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2500); }
-  function updateCartUI() { /* full update logic as original but simplified for brevity, same as robust version */ 
-    currentSubtotal = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
-    const total = currentSubtotal - voucherDiscount;
-    document.getElementById('cartPrice').textContent = `R${currentSubtotal}`;
-    document.getElementById('cartSubtotal').textContent = `R${currentSubtotal}`;
-    document.getElementById('cartTotal').textContent = `R${total}`;
-    if (voucherDiscount > 0) { document.getElementById('discountRow').style.display = 'flex'; document.getElementById('discountAmount').textContent = `-R${voucherDiscount}`; } else document.getElementById('discountRow').style.display = 'none';
-    const hasTickets = cart.some(i => i.isTicket); document.getElementById('deliverySection').style.display = hasTickets ? 'block' : 'none';
-    const cartItemsDiv = document.getElementById('cartItems');
-    if (!cart.length) { cartItemsDiv.innerHTML = '<div style="text-align:center;padding:2rem;color:#6B7280;">Your cart is empty</div>'; return; }
-    cartItemsDiv.innerHTML = cart.map(item => `<div class="cart-item"><div class="cart-item-info"><div class="cart-item-name">${item.emoji} ${item.name}</div><div class="cart-item-price">R${item.price}</div></div><div class="cart-item-qty"><button class="qty-control" onclick="updateQuantity(${item.id}, -1)">-</button><span>${item.quantity}</span><button class="qty-control" onclick="updateQuantity(${item.id}, 1)">+</button></div><button style="background:none;border:none;color:#9CA3AF;cursor:pointer;" onclick="removeItem(${item.id})">✕</button></div>`).join('');
-  }
-  window.updateQuantity = function(id, delta) { let item = cart.find(i => i.id === id); if (item) { item.quantity += delta; if (item.quantity <= 0) cart = cart.filter(i => i.id !== id); updateCartUI(); } };
-  window.removeItem = function(id) { cart = cart.filter(i => i.id !== id); updateCartUI(); showToast('Item removed'); };
-  function addToCart(product, element, quantity = 1) { if (element) { const flying = document.createElement('div'); flying.className = 'flying-item'; flying.innerHTML = product.emoji; const rect = element.getBoundingClientRect(); flying.style.left = rect.left + rect.width/2 - 20 + 'px'; flying.style.top = rect.top + rect.height/2 - 20 + 'px'; document.body.appendChild(flying); setTimeout(() => { flying.remove(); }, 1000); } let existing = cart.find(i => i.id === product.id); if (existing) existing.quantity += quantity; else cart.push({ ...product, quantity }); updateCartUI(); showToast(`✓ Added ${quantity} x ${product.emoji} ${product.name}`); }
-  
-  function renderMainContent() {
-    const container = document.getElementById('menuMain');
-    if (activeCategory === 'spirits') {
-      container.innerHTML = `<div class="spirit-sidebar"><div class="spirit-sidebar-title">🥃 PREMIUM SPIRITS</div><div class="spirit-categories">${[{id:"whisky",name:"Whisky",icon:"🥃"},{id:"vodka",name:"Vodka",icon:"🍸"},{id:"rum",name:"Rum",icon:"🍹"},{id:"tequila",name:"Tequila",icon:"🌵"},{id:"cognac",name:"Cognac",icon:"🥂"},{id:"liqueur",name:"Liqueur",icon:"🍊"},{id:"moreSpirits",name:"More Spirits",icon:"✨"}].map(cat => `<button class="spirit-category-btn ${activeSpiritCategory === cat.id ? 'active' : ''}" data-spirit-cat="${cat.id}"><span>${cat.icon}</span><span>${cat.name}</span></button>`).join('')}</div></div><div class="product-grid" id="spiritGrid"></div>`;
-      const grid = document.getElementById('spiritGrid'); let products = spiritProducts[activeSpiritCategory] || allSpirits;
-      grid.innerHTML = products.map(p => `<div class="product-card" data-product-id="${p.id}"><div class="product-image">${p.emoji}</div><div class="product-info"><div class="product-name">${p.name}</div><div class="product-desc">${p.desc}</div><div class="product-price">R${p.price}<span>.00</span></div></div><button class="add-btn" onclick="event.stopPropagation(); addToCartWithId(${p.id}, event)">+</button></div>`).join('');
-      document.querySelectorAll('.spirit-category-btn').forEach(btn => btn.addEventListener('click', () => { activeSpiritCategory = btn.getAttribute('data-spirit-cat'); renderMainContent(); }));
-      attachProductClickEvents();
-    } else if (activeCategory === 'tickets') {
-      container.innerHTML = `<div class="tickets-container">${ticketProducts.map(p => `<div class="ticket-card ${p.classSlug}"><div class="ticket-header">${p.popular ? '<div class="popular-badge">POPULAR</div>' : ''}<div class="ticket-type">${p.name}</div><div class="ticket-price">R${p.price.toLocaleString()}</div><p class="ticket-description">${p.desc}</p></div><div class="ticket-body"><ul class="features-list">${p.features.map(f => `<li><span class="feature-icon"><i class="fas fa-${f.includes('✗') ? 'times' : 'check-circle'}"></i></span> ${f}</li>`).join('')}</ul>${p.hasQuantity ? `<div class="quantity-selector" data-ticket-id="${p.id}"><button class="quantity-btn minus">−</button><span class="quantity-display">1</span><button class="quantity-btn plus">+</button></div>` : ''}</div><div class="ticket-footer"><button class="buy-btn" data-ticket-id="${p.id}" data-name="${p.name}" data-price="${p.price}">${p.hasQuantity ? 'Get Tickets' : 'Book This Table'}</button></div></div>`).join('')}</div>`;
-      document.querySelectorAll('.quantity-selector').forEach(sel => { const minus = sel.querySelector('.minus'), plus = sel.querySelector('.plus'), display = sel.querySelector('.quantity-display'); if(minus && plus) { minus.onclick = (e) => { e.stopPropagation(); let v = parseInt(display.textContent); if(v>1) display.textContent = v-1; }; plus.onclick = (e) => { e.stopPropagation(); let v = parseInt(display.textContent); if(v<10) display.textContent = v+1; }; } });
-      document.querySelectorAll('.buy-btn').forEach(btn => btn.addEventListener('click', (e) => { const id = parseInt(btn.dataset.ticketId); const ticket = ticketProducts.find(t => t.id === id); if(ticket) { let qty = 1; if(ticket.hasQuantity) { const card = btn.closest('.ticket-card'); const disp = card?.querySelector('.quantity-display'); if(disp) qty = parseInt(disp.textContent); } addToCart(ticket, btn, qty); } }));
-    } else {
-      let prods = otherProducts.filter(p => activeCategory === 'all' ? true : p.category === activeCategory);
-      container.innerHTML = `<div class="product-grid">${prods.map(p => `<div class="product-card ${p.specialCard || ''}" data-product-id="${p.id}"><div class="product-image">${p.emoji}</div><div class="product-info"><div class="product-name">${p.name}</div><div class="product-desc">${p.desc}</div><div class="product-price">R${p.price}<span>.00</span></div></div><button class="add-btn" onclick="event.stopPropagation(); addToCartWithId(${p.id}, event)">+</button></div>`).join('')}</div>`;
-      attachProductClickEvents();
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
-  function attachProductClickEvents() { document.querySelectorAll('.product-card').forEach(card => { card.addEventListener('click', (e) => { if(!e.target.classList.contains('add-btn')){ const id = parseInt(card.getAttribute('data-product-id')); let product; if(activeCategory === 'spirits') product = allSpirits.find(p => p.id === id); else product = otherProducts.find(p => p.id === id); if(product) addToCart(product, card, 1); } }); }); }
-  window.addToCartWithId = function(id, ev) { ev.stopPropagation(); let product; if(activeCategory === 'spirits') product = allSpirits.find(p => p.id === id); else product = otherProducts.find(p => p.id === id); if(product) addToCart(product, document.querySelector(`.product-card[data-product-id="${id}"]`), 1); };
-  
-  function setupCartSidebar() { const sidebar = document.getElementById('cartSidebar'); const overlay = document.getElementById('cartOverlay'); document.getElementById('openCartBtn').onclick = () => { sidebar.classList.add('open'); overlay.classList.add('open'); }; document.getElementById('closeCartBtn').onclick = () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); }; overlay.onclick = () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); }; }
-  function finalizeOrder(accountId) { 
-    const total = currentSubtotal - voucherDiscount; const orderNumber = 'ORD-' + Math.floor(Math.random()*10000) + '-' + Date.now().toString().slice(-6);
-    const orderItems = cart.map(i => ({ name: i.name, emoji: i.emoji, quantity: i.quantity, price: i.price, isTicket: i.isTicket }));
-    document.getElementById('cartSidebar').classList.remove('open'); document.getElementById('cartOverlay').classList.remove('open');
-    const details = orderItems.map(item => `${item.quantity}x ${item.emoji} ${item.name} - R${item.price * item.quantity}`).join('\n');
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`🍽️ *Rands Kiosk Order* 🍽️\n\n📋 *Order #:* ${orderNumber}\n💰 *Total:* R${total}\n\n*Items:*\n${details}\n\n📍 *Collection:* Rands Smart Counter\n🔴 *Status:* Ready for collection`)}`;
-    const canvas = document.getElementById('qrCodeCanvas'); canvas.width = 200; canvas.height = 200; const ctx = canvas.getContext('2d'); ctx.fillStyle = 'white'; ctx.fillRect(0, 0, 200, 200); new QRCode(canvas, { text: whatsappUrl, width: 200, height: 200, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.M });
-    document.getElementById('whatsappLink').href = whatsappUrl;
-    document.getElementById('qrPopupOverlay').classList.add('show');
-    cart = []; voucherApplied = false; voucherDiscount = 0; updateCartUI();
+
+  .hero-title {
+    font-size: 3rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #FFFFFF, #E31B23, #FF6B6B);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 1rem;
   }
-  function setupCheckout() { document.getElementById('checkoutBtn').onclick = async () => { if(cart.length===0){ showToast('Cart empty'); return; } const total = currentSubtotal - voucherDiscount; if(selectedPayment === 'wallet') { let acc = document.getElementById('walletAccountId').value.trim(); let pin = document.getElementById('walletPin').value.trim(); if(!acc || !pin) { showToast('Enter account and PIN'); return; } if(acc === '+27761234567' && pin === '1234') { finalizeOrder(acc); } else { showToast('Invalid wallet'); } } else { finalizeOrder(null); } }; }
-  function setupPayment() { document.querySelectorAll('.payment-option').forEach(opt => opt.addEventListener('click', () => { document.querySelectorAll('.payment-option').forEach(o=>o.classList.remove('selected')); opt.classList.add('selected'); selectedPayment = opt.dataset.payment; document.getElementById('voucherContainer').style.display = selectedPayment === '1voucher' ? 'block' : 'none'; document.getElementById('walletExtra').style.display = selectedPayment === 'wallet' ? 'block' : 'none'; })); document.getElementById('applyVoucherBtn').onclick = () => { const code = document.getElementById('voucherCode').value.trim(); if(code === 'RANDS50') { voucherApplied=true; voucherDiscount=50; updateCartUI(); document.getElementById('voucherMessage').innerHTML='✓ R50 discount applied'; } else if(code === 'RANDS100') { voucherApplied=true; voucherDiscount=100; updateCartUI(); document.getElementById('voucherMessage').innerHTML='✓ R100 discount applied'; } else document.getElementById('voucherMessage').innerHTML='✗ Invalid code'; }; document.getElementById('walletManualBtn').onclick = () => { document.getElementById('walletManualFields').style.display = 'block'; }; document.querySelectorAll('.delivery-option').forEach(o=>o.addEventListener('click',()=>{ document.querySelectorAll('.delivery-option').forEach(d=>d.classList.remove('selected')); o.classList.add('selected'); selectedDelivery = o.dataset.delivery; document.getElementById('whatsappContainer').style.display = selectedDelivery === 'whatsapp' ? 'block' : 'none'; })); }
-  document.querySelectorAll('.category-tab').forEach(tab => tab.addEventListener('click', () => { document.querySelectorAll('.category-tab').forEach(t=>t.classList.remove('active')); tab.classList.add('active'); activeCategory = tab.dataset.category; renderMainContent(); }));
-  const themeToggleBtn = document.getElementById('themeToggleBtn'); function setTheme(theme) { if(theme==='light') { document.body.classList.remove('dark-mode'); document.body.classList.add('light-mode'); themeToggleBtn.innerHTML='<span>☀️</span><span>Light</span>'; localStorage.setItem('theme','light'); } else { document.body.classList.remove('light-mode'); document.body.classList.add('dark-mode'); themeToggleBtn.innerHTML='<span>🌙</span><span>Dark</span>'; localStorage.setItem('theme','dark'); } } if(localStorage.getItem('theme')==='dark') setTheme('dark'); else setTheme('light'); themeToggleBtn.onclick = () => setTheme(document.body.classList.contains('dark-mode') ? 'light' : 'dark');
-  document.getElementById('closeScannerBtn').onclick = () => { document.getElementById('qrScannerModal').classList.remove('show'); if(html5QrCode) html5QrCode.stop().catch(e=>console.log); };
-  document.getElementById('closeQrPopupBtn').onclick = () => { document.getElementById('qrPopupOverlay').classList.remove('show'); window.location.href = "index.html"; };
-  renderMainContent(); setupCartSidebar(); setupPayment(); setupCheckout(); document.querySelector('.payment-option[data-payment="eft"]').classList.add('selected'); document.querySelector('.delivery-option[data-delivery="print"]').classList.add('selected');
+
+  .hero-subtitle {
+    font-size: 1rem;
+    color: #9CA3AF;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* Action Cards - 3 cards (Order, Collect, Tickets) */
+  .action-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+  }
+
+  .action-card {
+    background: rgba(17, 17, 17, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 48px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    border: 1px solid rgba(227,27,35,0.2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .action-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(227,27,35,0.1), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .action-card:hover {
+    transform: translateY(-8px);
+    border-color: #E31B23;
+    box-shadow: 0 20px 40px rgba(227,27,35,0.2);
+  }
+
+  .action-card:hover::before {
+    opacity: 1;
+  }
+
+  .card-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    display: inline-block;
+    animation: iconFloat 3s infinite ease-in-out;
+  }
+
+  @keyframes iconFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+
+  .card-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 0.5rem;
+  }
+
+  .card-description {
+    font-size: 0.85rem;
+    color: #9CA3AF;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+  }
+
+  .card-btn {
+    background: #E31B23;
+    border: none;
+    padding: 0.6rem 1.5rem;
+    border-radius: 40px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 0.5rem;
+    display: inline-block;
+  }
+
+  .card-btn:hover {
+    background: #B3131A;
+    transform: scale(1.02);
+  }
+
+  /* Quick Access Row */
+  .quick-access {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(227,27,35,0.2);
+  }
+
+  .quick-title {
+    text-align: center;
+    color: #9CA3AF;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+  }
+
+  .quick-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .quick-btn {
+    background: rgba(30, 30, 30, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(227,27,35,0.3);
+    padding: 0.6rem 1.2rem;
+    border-radius: 40px;
+    color: #D1D5DB;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .quick-btn:hover {
+    background: #E31B23;
+    color: white;
+    border-color: #E31B23;
+  }
+
+  /* Footer */
+  .kiosk-footer {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 1.5rem;
+    border-top: 1px solid rgba(227,27,35,0.2);
+    font-size: 0.7rem;
+    color: #6B7280;
+  }
+
+  .footer-brand {
+    color: #E31B23;
+  }
+
+  /* Toast - kept for other non-card notifications */
+  .toast-message {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1F1F1F;
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 40px;
+    font-size: 0.85rem;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    border-left: 3px solid #E31B23;
+  }
+
+  .toast-message.show {
+    opacity: 1;
+  }
+
+  /* Event Ticket Hub Styles */
+  .events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+  
+  .event-card {
+    background: #111;
+    border-radius: 32px;
+    overflow: hidden;
+    border: 1px solid rgba(227,27,35,0.3);
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  
+  .event-card:hover {
+    transform: translateY(-4px);
+    border-color: #E31B23;
+  }
+  
+  .event-badge {
+    background: #E31B23;
+    padding: 0.6rem;
+    text-align: center;
+    font-weight: bold;
+    color: white;
+    font-size: 0.8rem;
+  }
+  
+  .event-content {
+    padding: 1.5rem;
+  }
+  
+  .event-emoji {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .event-name {
+    color: white;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  
+  .event-datetime {
+    color: #9CA3AF;
+    margin: 0.5rem 0;
+    font-size: 0.85rem;
+  }
+  
+  .event-price {
+    color: #E31B23;
+    font-weight: bold;
+    margin: 0.5rem 0;
+  }
+  
+  .buy-ticket-btn {
+    background: #E31B23;
+    border: none;
+    width: 100%;
+    margin-top: 1rem;
+    padding: 0.6rem;
+    border-radius: 40px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .buy-ticket-btn:hover {
+    background: #B3131A;
+  }
+  
+  .ticket-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .back-to-kiosk {
+    background: rgba(30,30,30,0.9);
+    border: 1px solid #E31B23;
+    padding: 0.5rem 1.2rem;
+    border-radius: 40px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .back-to-kiosk:hover {
+    background: #E31B23;
+  }
+  
+  .ticket-info-footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding: 1rem;
+    background: rgba(227,27,35,0.1);
+    border-radius: 48px;
+  }
+
+  /* Responsive */
+  @media (max-width: 700px) {
+    .hero-title { font-size: 2rem; }
+    .action-grid { gap: 1rem; }
+    .action-card { padding: 1.5rem; }
+    .card-icon { font-size: 3rem; }
+    .card-title { font-size: 1.2rem; }
+    .kiosk-main { padding: 1.5rem; }
+    .kiosk-header { padding: 1rem; }
+    .logo-circle { width: 55px; height: 55px; }
+    .logo-circle img { width: 36px; height: 36px; }
+    .logo-area h1 { font-size: 1.3rem; }
+  }
+
+  @media (max-width: 480px) {
+    .hero-title { font-size: 1.5rem; }
+    .action-grid { grid-template-columns: 1fr; }
+    .logo-circle { width: 50px; height: 50px; }
+    .logo-circle img { width: 32px; height: 32px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="kiosk-container">
+  <div class="kiosk-bg"></div>
+  
+  <!-- Header with LARGER CIRCULAR LOGO -->
+  <div class="kiosk-header">
+    <div class="logo-area">
+      <div class="logo-circle" id="brandLogo">
+        <img src="images/rands-logo.png" alt="Rands Logo" onerror="this.onerror=null; this.parentElement.innerHTML='<span>R</span>';">
+      </div>
+      <h1>Rands Kiosk</h1>
+    </div>
+    <div class="time-area" id="liveTime">--:-- --</div>
+  </div>
+  
+  <!-- Main Content -->
+  <div class="kiosk-main">
+    <div class="hero-section">
+      <h1 class="hero-title">Welcome to Rands Kiosk</h1>
+      <p class="hero-subtitle">Tap, order, collect — and grab event tickets! Fast & cashless.</p>
+    </div>
+    
+    <!-- Action Cards - Order, Collect, EVENT TICKETS - NO TOAST ON CLICK, IMMEDIATE REDIRECT -->
+    <div class="action-grid">
+      <!-- Start New Order - immediate redirect to menu page -->
+      <div class="action-card" id="startOrderBtn">
+        <div class="card-icon">🍺</div>
+        <h2 class="card-title">Start New Order</h2>
+        <p class="card-description">Browse our drinks & menu and place your order</p>
+        <div class="card-btn">Order Now →</div>
+      </div>
+      
+      <!-- Scan QR to Collect - immediate prompt (no toast delay) -->
+      <div class="action-card" id="collectOrderBtn">
+        <div class="card-icon">📱</div>
+        <h2 class="card-title">Collect Order</h2>
+        <p class="card-description">Scan your QR code to pick up your order</p>
+        <div class="card-btn">Scan QR →</div>
+      </div>
+
+      <!-- EVENT TICKETS CARD - immediate redirect to ticket hub -->
+      <div class="action-card" id="eventTicketsBtn">
+        <div class="card-icon">🎟️</div>
+        <h2 class="card-title">Event Tickets</h2>
+        <p class="card-description">Buy event tickets · Print instantly or get via WhatsApp</p>
+        <div class="card-btn">Get Tickets →</div>
+      </div>
+    </div>
+    
+    <!-- Quick Access - Removed Daily Specials, only drinks categories -->
+    <div class="quick-access">
+      <div class="quick-title">QUICK ACCESS</div>
+      <div class="quick-buttons">
+        <button class="quick-btn" data-menu="beer">🍺 Beers & Ciders</button>
+        <button class="quick-btn" data-menu="wine">🍷 Wine & Champagne</button>
+        <button class="quick-btn" data-menu="spirits">🥃 Spirits & Cocktails</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Footer -->
+  <div class="kiosk-footer">
+    <span class="footer-brand">Rands Venue Management</span> · #SeeYourVibe · Events & Hospitality
+  </div>
+</div>
+
+<!-- Toast message container (kept for other occasional notifications, but cards won't use it) -->
+<div id="toast" class="toast-message"></div>
+
+<script>
+  // ==================== LIVE TIME ====================
+  function updateTime() {
+    const now = new Date();
+    const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('liveTime').textContent = timeString;
+  }
+  updateTime();
+  setInterval(updateTime, 1000);
+  
+  // ==================== TOAST FUNCTION (only used for non-card actions now) ====================
+  function showToast(message, duration = 3000) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, duration);
+  }
+  
+  // ==================== EVENT TICKETS - IMMEDIATE REDIRECT (NO TOAST) ====================
+  function redirectToEventTickets() {
+    // Directly open ticket hub without any toast notification
+    openTicketHub();
+  }
+  
+  // Open Ticket Hub with event listings, print & WhatsApp options
+  function openTicketHub() {
+    const mainContainer = document.querySelector('.kiosk-main');
+    const heroSection = document.querySelector('.hero-section');
+    const actionGrid = document.querySelector('.action-grid');
+    const quickAccess = document.querySelector('.quick-access');
+    
+    mainContainer.style.transition = 'opacity 0.15s';
+    mainContainer.style.opacity = '0';
+    
+    setTimeout(() => {
+      // Build enhanced ticket page with print & WhatsApp delivery info
+      const ticketHTML = `
+        <div class="ticket-page" style="animation: fadeInUp 0.4s ease;">
+          <div class="ticket-page-header">
+            <h2 style="color: white; font-size: 1.8rem; background: linear-gradient(135deg, #E31B23, #FF8A8A); -webkit-background-clip: text; background-clip: text; color: transparent;">🎫 Upcoming Events</h2>
+            <button class="back-to-kiosk" id="backToKioskBtn">← Back to Kiosk</button>
+          </div>
+          
+          <!-- Delivery options banner -->
+          <div style="background: rgba(227,27,35,0.15); border-radius: 60px; padding: 0.8rem 1.2rem; margin-bottom: 2rem; display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; backdrop-filter: blur(4px);">
+            <span style="color: #E31B23; font-weight: 500;">🖨️ Print instantly at kiosk</span>
+            <span style="color: #E31B23; font-weight: 500;">📱 Delivered via WhatsApp</span>
+            <span style="color: #E31B23; font-weight: 500;">📧 Email copy included</span>
+          </div>
+          
+          <div class="events-grid">
+            <!-- Event 1 -->
+            <div class="event-card">
+              <div class="event-badge">🔥 SOLD OUT SOON</div>
+              <div class="event-content">
+                <div class="event-emoji">🎤</div>
+                <div class="event-name">Neon Vibes Fest</div>
+                <div class="event-datetime">Sat, 25 May 2025 · 8PM</div>
+                <div class="event-price">From R250</div>
+                <button class="buyTicketBtn" data-event="Neon Vibes Fest" data-price="250">Select Tickets</button>
+              </div>
+            </div>
+            <!-- Event 2 -->
+            <div class="event-card">
+              <div class="event-badge" style="background:#1a1a1a; color:#E31B23;">🎧 ELECTRONIC</div>
+              <div class="event-content">
+                <div class="event-emoji">🍾</div>
+                <div class="event-name">Rooftop Pool Party</div>
+                <div class="event-datetime">Sun, 2 June 2025 · 2PM</div>
+                <div class="event-price">R180 - R450</div>
+                <button class="buyTicketBtn" data-event="Rooftop Pool Party" data-price="180">Select Tickets</button>
+              </div>
+            </div>
+            <!-- Event 3 -->
+            <div class="event-card">
+              <div class="event-badge" style="background:#0f0f0f; color:#FFD966;">⭐ VIP EXPERIENCE</div>
+              <div class="event-content">
+                <div class="event-emoji">🥂</div>
+                <div class="event-name">Champagne & Jazz Night</div>
+                <div class="event-datetime">Fri, 7 June 2025 · 7PM</div>
+                <div class="event-price">R550 (incl. welcome drink)</div>
+                <button class="buyTicketBtn" data-event="Champagne & Jazz Night" data-price="550">Select Tickets</button>
+              </div>
+            </div>
+            <!-- Event 4 -->
+            <div class="event-card">
+              <div class="event-badge" style="background:#2c0f0f;">🏆 COMEDY NIGHT</div>
+              <div class="event-content">
+                <div class="event-emoji">😂</div>
+                <div class="event-name">Laugh Factory Live</div>
+                <div class="event-datetime">Wed, 12 June 2025 · 8:30PM</div>
+                <div class="event-price">R120 - R200</div>
+                <button class="buyTicketBtn" data-event="Laugh Factory Live" data-price="120">Select Tickets</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="ticket-info-footer">
+            <p style="color: #D1D5DB;">🎟️ Secure your spot — choose <strong>Print instantly</strong> at kiosk or <strong>WhatsApp delivery</strong> after payment. Fast & contactless.</p>
+            <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 0.8rem; flex-wrap: wrap;">
+              <span style="background: #1F1F1F; padding: 0.2rem 0.8rem; border-radius: 20px; font-size: 0.7rem;">🖨️ Instant print receipt</span>
+              <span style="background: #1F1F1F; padding: 0.2rem 0.8rem; border-radius: 20px; font-size: 0.7rem;">📲 WhatsApp ticket delivery</span>
+              <span style="background: #1F1F1F; padding: 0.2rem 0.8rem; border-radius: 20px; font-size: 0.7rem;">✅ QR code entry</span>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      if (heroSection && actionGrid && quickAccess) {
+        heroSection.style.display = 'none';
+        actionGrid.style.display = 'none';
+        quickAccess.style.display = 'none';
+      }
+      
+      let ticketContainer = document.getElementById('dynamicTicketHub');
+      if (!ticketContainer) {
+        ticketContainer = document.createElement('div');
+        ticketContainer.id = 'dynamicTicketHub';
+        mainContainer.appendChild(ticketContainer);
+      }
+      ticketContainer.innerHTML = ticketHTML;
+      ticketContainer.style.display = 'block';
+      
+      // Attach buy ticket event with delivery options
+      document.querySelectorAll('.buyTicketBtn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const eventName = btn.getAttribute('data-event');
+          const price = btn.getAttribute('data-price');
+          
+          const deliveryChoice = confirm(`🎫 ${eventName} - R${price}\n\nSelect delivery method:\n• Click OK for PRINT INSTANTLY (kiosk printout)\n• Click Cancel for WHATSAPP delivery`);
+          
+          if (deliveryChoice) {
+            showToast(`🖨️ ${eventName} ticket selected. Printing instantly at kiosk...`, 2500);
+            setTimeout(() => {
+              showToast(`✅ Ticket printed! Collect from printer. Enjoy ${eventName}!`, 3000);
+            }, 1500);
+          } else {
+            const phone = prompt("📱 Enter your WhatsApp number for ticket delivery (e.g., 0712345678):");
+            if (phone && phone.trim().length >= 9) {
+              showToast(`📲 Ticket for ${eventName} will be sent via WhatsApp to ${phone} within 2 minutes.`, 3500);
+              setTimeout(() => {
+                showToast(`✅ WhatsApp ticket delivered! Show QR at entrance.`, 3000);
+              }, 2000);
+            } else if (phone) {
+              showToast(`⚠️ Invalid number. Please try again or use print option.`, 2500);
+            } else {
+              showToast(`❌ Delivery cancelled.`, 1500);
+            }
+          }
+        });
+      });
+      
+      // Back button restores main kiosk view
+      const backBtn = document.getElementById('backToKioskBtn');
+      if (backBtn) {
+        backBtn.addEventListener('click', () => {
+          if (heroSection) heroSection.style.display = 'block';
+          if (actionGrid) actionGrid.style.display = 'grid';
+          if (quickAccess) quickAccess.style.display = 'block';
+          if (ticketContainer) ticketContainer.style.display = 'none';
+          mainContainer.style.opacity = '1';
+          // No toast on back either for clean experience
+        });
+      }
+      
+      mainContainer.style.opacity = '1';
+    }, 150);
+  }
+  
+  // ==================== COLLECT ORDER HANDLER - Immediate prompt, no toast delay ====================
+  function collectOrderHandler() {
+    // Directly open prompt without any toast notification
+    const qrCode = prompt('📱 Scan or enter your Order QR Code:');
+    if (qrCode && qrCode.trim() !== "") {
+      alert(`✅ Order ${qrCode} found! Ready for pickup.`);
+    } else if (qrCode === "") {
+      alert('⚠️ No QR code entered.');
+    }
+  }
+  
+  // ==================== START ORDER - Immediate redirect to menu page ====================
+  function startOrderHandler() {
+    // Immediately redirect without any toast
+    window.location.href = 'kiosk-menu.html';
+  }
+  
+  // ==================== QUICK ACCESS BUTTONS - Immediate redirect ====================
+  function quickAccessHandler(menu) {
+    // Direct redirect without toast
+    window.location.href = `kiosk-menu.html?category=${menu}`;
+  }
+  
+  // ==================== ATTACH EVENT LISTENERS (no toast, immediate action) ====================
+  document.getElementById('startOrderBtn').addEventListener('click', startOrderHandler);
+  document.getElementById('collectOrderBtn').addEventListener('click', collectOrderHandler);
+  const eventBtn = document.getElementById('eventTicketsBtn');
+  if (eventBtn) {
+    eventBtn.addEventListener('click', redirectToEventTickets);
+  }
+  
+  // Quick Access Buttons - immediate redirect
+  document.querySelectorAll('.quick-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const menu = btn.getAttribute('data-menu');
+      quickAccessHandler(menu);
+    });
+  });
+  
+  // ==================== ANIMATIONS ON LOAD ====================
+  const cards = document.querySelectorAll('.action-card');
+  cards.forEach((card, index) => {
+    card.style.animation = `cardFadeIn 0.5s ease forwards ${index * 0.1 + 0.2}s`;
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(30px)';
+  });
+  
+  const styleSheet = document.createElement('style');
+  styleSheet.textContent = `
+    @keyframes cardFadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  `;
+  document.head.appendChild(styleSheet);
+  
+  // Handle logo image fallback
+  const logoImg = document.querySelector('.logo-circle img');
+  if (logoImg && logoImg.complete && logoImg.naturalWidth === 0) {
+    logoImg.onerror();
+  }
+  
+  console.log('%c🎟️ RANDS KIOSK — Cards redirect immediately (no toast notifications)', 'color: #E31B23; font-size: 14px; font-weight: bold;');
 </script>
 </body>
 </html>
