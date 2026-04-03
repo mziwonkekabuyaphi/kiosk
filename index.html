@@ -96,7 +96,6 @@
     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
   }
   
-  /* Fallback text inside circle if image missing */
   .logo-circle span {
     font-size: 2rem;
     font-weight: 800;
@@ -170,7 +169,7 @@
     margin: 0 auto;
   }
 
-  /* Action Cards - 3 cards (Order, Collect, Tickets) */
+  /* Action Cards */
   .action-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -257,7 +256,7 @@
     transform: scale(1.02);
   }
 
-  /* Quick Access Row */
+  /* Quick Access */
   .quick-access {
     margin-top: 2rem;
     padding-top: 2rem;
@@ -312,26 +311,137 @@
     color: #E31B23;
   }
 
-  /* Toast */
-  .toast-message {
+  /* ==================== BEAUTIFUL MODAL POPUP ==================== */
+  .modal-overlay {
     position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #1F1F1F;
-    color: white;
-    padding: 0.8rem 1.5rem;
-    border-radius: 40px;
-    font-size: 0.85rem;
-    z-index: 1000;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     opacity: 0;
-    transition: opacity 0.2s;
-    pointer-events: none;
-    border-left: 3px solid #E31B23;
+    visibility: hidden;
+    transition: all 0.3s ease;
   }
 
-  .toast-message.show {
+  .modal-overlay.active {
     opacity: 1;
+    visibility: visible;
+  }
+
+  .beautiful-modal {
+    background: linear-gradient(135deg, #1A1A1A 0%, #0F0F0F 100%);
+    border-radius: 48px;
+    max-width: 450px;
+    width: 90%;
+    padding: 2rem;
+    border: 1px solid rgba(227,27,35,0.4);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(227,27,35,0.2);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+    animation: modalPop 0.3s ease forwards;
+  }
+
+  @keyframes modalPop {
+    from {
+      transform: scale(0.9);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  .modal-icon {
+    font-size: 4rem;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .modal-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    color: white;
+    margin-bottom: 0.75rem;
+  }
+
+  .modal-message {
+    color: #9CA3AF;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+    font-size: 0.95rem;
+  }
+
+  .modal-input {
+    width: 100%;
+    padding: 1rem;
+    background: #2A2A2A;
+    border: 1px solid #3A3A3A;
+    border-radius: 24px;
+    color: white;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    transition: border-color 0.2s;
+  }
+
+  .modal-input:focus {
+    outline: none;
+    border-color: #E31B23;
+  }
+
+  .modal-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  .modal-btn {
+    flex: 1;
+    padding: 0.8rem;
+    border-radius: 40px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+  }
+
+  .modal-btn.primary {
+    background: #E31B23;
+    color: white;
+  }
+
+  .modal-btn.primary:hover {
+    background: #B3131A;
+    transform: scale(1.02);
+  }
+
+  .modal-btn.secondary {
+    background: #2A2A2A;
+    color: #9CA3AF;
+  }
+
+  .modal-btn.secondary:hover {
+    background: #3A3A3A;
+    color: white;
+  }
+
+  /* Success Modal Special */
+  .success-modal .modal-icon {
+    animation: bounce 0.5s ease;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
   }
 
   /* Event Ticket Hub Styles */
@@ -440,7 +550,6 @@
     border-radius: 48px;
   }
 
-  /* Responsive */
   @media (max-width: 700px) {
     .hero-title { font-size: 2rem; }
     .action-grid { gap: 1rem; }
@@ -467,10 +576,9 @@
 <div class="kiosk-container">
   <div class="kiosk-bg"></div>
   
-  <!-- Header with LARGER CIRCULAR LOGO -->
   <div class="kiosk-header">
     <div class="logo-area">
-      <div class="logo-circle" id="brandLogo">
+      <div class="logo-circle">
         <img src="images/rands-logo.png" alt="Rands Logo" onerror="this.onerror=null; this.parentElement.innerHTML='<span>R</span>';">
       </div>
       <h1>Rands Kiosk</h1>
@@ -478,16 +586,13 @@
     <div class="time-area" id="liveTime">--:-- --</div>
   </div>
   
-  <!-- Main Content -->
   <div class="kiosk-main">
     <div class="hero-section">
       <h1 class="hero-title">Welcome to Rands Kiosk</h1>
       <p class="hero-subtitle">Tap, order, collect — and grab event tickets! Fast & cashless.</p>
     </div>
     
-    <!-- Action Cards - Order, Collect, EVENT TICKETS -->
     <div class="action-grid">
-      <!-- Start New Order -->
       <div class="action-card" id="startOrderBtn">
         <div class="card-icon">🍺</div>
         <h2 class="card-title">Start New Order</h2>
@@ -495,7 +600,6 @@
         <div class="card-btn">Order Now →</div>
       </div>
       
-      <!-- Scan QR to Collect -->
       <div class="action-card" id="collectOrderBtn">
         <div class="card-icon">📱</div>
         <h2 class="card-title">Collect Order</h2>
@@ -503,7 +607,6 @@
         <div class="card-btn">Scan QR →</div>
       </div>
 
-      <!-- EVENT TICKETS CARD -->
       <div class="action-card" id="eventTicketsBtn">
         <div class="card-icon">🎟️</div>
         <h2 class="card-title">Event Tickets</h2>
@@ -512,7 +615,6 @@
       </div>
     </div>
     
-    <!-- Quick Access - Removed Daily Specials, only drinks categories -->
     <div class="quick-access">
       <div class="quick-title">QUICK ACCESS</div>
       <div class="quick-buttons">
@@ -523,16 +625,131 @@
     </div>
   </div>
   
-  <!-- Footer -->
   <div class="kiosk-footer">
     <span class="footer-brand">Rands Venue Management</span> · #SeeYourVibe · Events & Hospitality
   </div>
 </div>
 
-<!-- Toast message container -->
-<div id="toast" class="toast-message"></div>
+<!-- Beautiful Modal Component -->
+<div id="beautifulModal" class="modal-overlay">
+  <div class="beautiful-modal">
+    <div class="modal-icon" id="modalIcon">✅</div>
+    <h3 class="modal-title" id="modalTitle">Success!</h3>
+    <p class="modal-message" id="modalMessage">Your action was completed successfully.</p>
+    <div id="modalInputContainer" style="display: none;">
+      <input type="text" id="modalInput" class="modal-input" placeholder="Enter value">
+    </div>
+    <div class="modal-buttons" id="modalButtons">
+      <button class="modal-btn primary" id="modalConfirmBtn">OK</button>
+    </div>
+  </div>
+</div>
 
 <script>
+  // ==================== BEAUTIFUL MODAL SYSTEM ====================
+  let modalResolve = null;
+  
+  function showModal(options) {
+    return new Promise((resolve) => {
+      const modal = document.getElementById('beautifulModal');
+      const iconEl = document.getElementById('modalIcon');
+      const titleEl = document.getElementById('modalTitle');
+      const messageEl = document.getElementById('modalMessage');
+      const inputContainer = document.getElementById('modalInputContainer');
+      const inputEl = document.getElementById('modalInput');
+      const buttonsContainer = document.getElementById('modalButtons');
+      
+      // Set content
+      iconEl.textContent = options.icon || '✅';
+      titleEl.textContent = options.title || 'Notification';
+      messageEl.textContent = options.message || '';
+      
+      // Handle input if needed
+      if (options.showInput) {
+        inputContainer.style.display = 'block';
+        inputEl.placeholder = options.inputPlaceholder || 'Enter value';
+        inputEl.value = '';
+      } else {
+        inputContainer.style.display = 'none';
+      }
+      
+      // Build buttons
+      buttonsContainer.innerHTML = '';
+      if (options.buttons === 'confirm-cancel') {
+        const cancelBtn = document.createElement('button');
+        cancelBtn.className = 'modal-btn secondary';
+        cancelBtn.textContent = 'Cancel';
+        cancelBtn.onclick = () => {
+          closeModal();
+          resolve(null);
+        };
+        
+        const confirmBtn = document.createElement('button');
+        confirmBtn.className = 'modal-btn primary';
+        confirmBtn.textContent = options.confirmText || 'Confirm';
+        confirmBtn.onclick = () => {
+          const inputValue = options.showInput ? inputEl.value : true;
+          closeModal();
+          resolve(inputValue);
+        };
+        
+        buttonsContainer.appendChild(cancelBtn);
+        buttonsContainer.appendChild(confirmBtn);
+      } else {
+        const okBtn = document.createElement('button');
+        okBtn.className = 'modal-btn primary';
+        okBtn.textContent = options.buttonText || 'OK';
+        okBtn.onclick = () => {
+          const inputValue = options.showInput ? inputEl.value : true;
+          closeModal();
+          resolve(inputValue);
+        };
+        buttonsContainer.appendChild(okBtn);
+      }
+      
+      // Show modal
+      modal.classList.add('active');
+      
+      function closeModal() {
+        modal.classList.remove('active');
+      }
+    });
+  }
+  
+  function showAlertModal(title, message, icon = '📢') {
+    return showModal({
+      title: title,
+      message: message,
+      icon: icon,
+      buttons: 'ok',
+      buttonText: 'OK'
+    });
+  }
+  
+  function showPromptModal(title, message, placeholder, icon = '✏️') {
+    return showModal({
+      title: title,
+      message: message,
+      icon: icon,
+      showInput: true,
+      inputPlaceholder: placeholder,
+      buttons: 'confirm-cancel',
+      confirmText: 'Submit'
+    });
+  }
+  
+  function showSuccessModal(message) {
+    return showAlertModal('Success!', message, '✅');
+  }
+  
+  function showErrorModal(message) {
+    return showAlertModal('Error', message, '❌');
+  }
+  
+  function showInfoModal(title, message) {
+    return showAlertModal(title, message, 'ℹ️');
+  }
+  
   // ==================== LIVE TIME ====================
   function updateTime() {
     const now = new Date();
@@ -542,44 +759,79 @@
   updateTime();
   setInterval(updateTime, 1000);
   
-  // ==================== TOAST FUNCTION ====================
-  function showToast(message, duration = 3000) {
-    const toast = document.getElementById('toast');
-    toast.textContent = message;
-    toast.classList.add('show');
-    setTimeout(() => {
-      toast.classList.remove('show');
-    }, duration);
+  // ==================== COLLECT ORDER - Beautiful QR Modal ====================
+  async function collectOrderHandler() {
+    const qrCode = await showPromptModal(
+      'Scan QR Code',
+      'Please scan or enter your order QR code to collect your items.',
+      'Enter QR code (e.g., RNDS-12345)',
+      '📱'
+    );
+    
+    if (qrCode && qrCode.trim() !== "") {
+      await showSuccessModal(`✅ Order ${qrCode} found! Ready for pickup. Please proceed to collection point.`);
+    } else if (qrCode !== null) {
+      await showErrorModal('No QR code entered. Please try again.');
+    }
   }
   
-  // ==================== EVENT TICKETS REDIRECT ====================
+  // ==================== START ORDER - Redirect with beautiful confirmation ====================
+  async function startOrderHandler() {
+    const confirm = await showModal({
+      title: 'Start New Order',
+      message: 'Ready to browse our drinks menu? You will be redirected to the ordering page.',
+      icon: '🍺',
+      buttons: 'confirm-cancel',
+      confirmText: 'Continue'
+    });
+    
+    if (confirm) {
+      window.location.href = 'kiosk-menu.html';
+    }
+  }
+  
+  // ==================== QUICK ACCESS ====================
+  async function quickAccessHandler(menu) {
+    let menuDisplay = '';
+    if (menu === 'beer') menuDisplay = 'Beers & Ciders 🍺';
+    if (menu === 'wine') menuDisplay = 'Wine & Champagne 🍷';
+    if (menu === 'spirits') menuDisplay = 'Spirits & Cocktails 🥃';
+    
+    const confirm = await showModal({
+      title: menuDisplay,
+      message: `Browse our selection of ${menuDisplay}?`,
+      icon: '🍽️',
+      buttons: 'confirm-cancel',
+      confirmText: 'View Menu'
+    });
+    
+    if (confirm) {
+      window.location.href = `kiosk-menu.html?category=${menu}`;
+    }
+  }
+  
+  // ==================== EVENT TICKETS SYSTEM ====================
   function redirectToEventTickets() {
-    showToast("🎟️ Loading event tickets — print instantly or WhatsApp delivery available", 1800);
-    setTimeout(() => {
-      openTicketHub();
-    }, 500);
+    openTicketHub();
   }
   
-  // Open Ticket Hub with event listings, print & WhatsApp options
   function openTicketHub() {
     const mainContainer = document.querySelector('.kiosk-main');
     const heroSection = document.querySelector('.hero-section');
     const actionGrid = document.querySelector('.action-grid');
     const quickAccess = document.querySelector('.quick-access');
     
-    mainContainer.style.transition = 'opacity 0.2s';
+    mainContainer.style.transition = 'opacity 0.15s';
     mainContainer.style.opacity = '0';
     
     setTimeout(() => {
-      // Build enhanced ticket page with print & WhatsApp delivery info
       const ticketHTML = `
-        <div class="ticket-page" style="animation: fadeInUp 0.5s ease;">
+        <div class="ticket-page" style="animation: fadeInUp 0.4s ease;">
           <div class="ticket-page-header">
             <h2 style="color: white; font-size: 1.8rem; background: linear-gradient(135deg, #E31B23, #FF8A8A); -webkit-background-clip: text; background-clip: text; color: transparent;">🎫 Upcoming Events</h2>
             <button class="back-to-kiosk" id="backToKioskBtn">← Back to Kiosk</button>
           </div>
           
-          <!-- Delivery options banner -->
           <div style="background: rgba(227,27,35,0.15); border-radius: 60px; padding: 0.8rem 1.2rem; margin-bottom: 2rem; display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; backdrop-filter: blur(4px);">
             <span style="color: #E31B23; font-weight: 500;">🖨️ Print instantly at kiosk</span>
             <span style="color: #E31B23; font-weight: 500;">📱 Delivered via WhatsApp</span>
@@ -587,7 +839,6 @@
           </div>
           
           <div class="events-grid">
-            <!-- Event 1 -->
             <div class="event-card">
               <div class="event-badge">🔥 SOLD OUT SOON</div>
               <div class="event-content">
@@ -598,7 +849,6 @@
                 <button class="buyTicketBtn" data-event="Neon Vibes Fest" data-price="250">Select Tickets</button>
               </div>
             </div>
-            <!-- Event 2 -->
             <div class="event-card">
               <div class="event-badge" style="background:#1a1a1a; color:#E31B23;">🎧 ELECTRONIC</div>
               <div class="event-content">
@@ -609,7 +859,6 @@
                 <button class="buyTicketBtn" data-event="Rooftop Pool Party" data-price="180">Select Tickets</button>
               </div>
             </div>
-            <!-- Event 3 -->
             <div class="event-card">
               <div class="event-badge" style="background:#0f0f0f; color:#FFD966;">⭐ VIP EXPERIENCE</div>
               <div class="event-content">
@@ -620,7 +869,6 @@
                 <button class="buyTicketBtn" data-event="Champagne & Jazz Night" data-price="550">Select Tickets</button>
               </div>
             </div>
-            <!-- Event 4 -->
             <div class="event-card">
               <div class="event-badge" style="background:#2c0f0f;">🏆 COMEDY NIGHT</div>
               <div class="event-content">
@@ -634,12 +882,7 @@
           </div>
           
           <div class="ticket-info-footer">
-            <p style="color: #D1D5DB;">🎟️ Secure your spot — choose <strong>Print instantly</strong> at kiosk or <strong>WhatsApp delivery</strong> after payment. Fast & contactless.</p>
-            <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 0.8rem; flex-wrap: wrap;">
-              <span style="background: #1F1F1F; padding: 0.2rem 0.8rem; border-radius: 20px; font-size: 0.7rem;">🖨️ Instant print receipt</span>
-              <span style="background: #1F1F1F; padding: 0.2rem 0.8rem; border-radius: 20px; font-size: 0.7rem;">📲 WhatsApp ticket delivery</span>
-              <span style="background: #1F1F1F; padding: 0.2rem 0.8rem; border-radius: 20px; font-size: 0.7rem;">✅ QR code entry</span>
-            </div>
+            <p style="color: #D1D5DB;">🎟️ Secure your spot — choose <strong>Print instantly</strong> at kiosk or <strong>WhatsApp delivery</strong> after payment.</p>
           </div>
         </div>
       `;
@@ -659,38 +902,37 @@
       ticketContainer.innerHTML = ticketHTML;
       ticketContainer.style.display = 'block';
       
-      // Attach buy ticket event with delivery options (Print instantly / WhatsApp)
       document.querySelectorAll('.buyTicketBtn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+        btn.addEventListener('click', async (e) => {
           const eventName = btn.getAttribute('data-event');
           const price = btn.getAttribute('data-price');
           
-          // Show delivery method selection
-          const deliveryChoice = confirm(`🎫 ${eventName} - R${price}\n\nSelect delivery method:\n• Click OK for PRINT INSTANTLY (kiosk printout)\n• Click Cancel for WHATSAPP delivery`);
+          const deliveryChoice = await showModal({
+            title: eventName,
+            message: `Price: R${price}\n\nChoose delivery method:`,
+            icon: '🎫',
+            buttons: 'confirm-cancel',
+            confirmText: '🖨️ Print Instantly'
+          });
           
           if (deliveryChoice) {
-            showToast(`🖨️ ${eventName} ticket selected. Printing instantly at kiosk...`, 2500);
-            setTimeout(() => {
-              showToast(`✅ Ticket printed! Collect from printer. Enjoy ${eventName}!`, 3000);
-            }, 1500);
+            await showSuccessModal(`✅ ${eventName} ticket selected! Printing instantly at kiosk. Please collect your ticket.`);
           } else {
-            // WhatsApp delivery flow
-            const phone = prompt("📱 Enter your WhatsApp number for ticket delivery (e.g., 0712345678):");
+            const phone = await showPromptModal(
+              'WhatsApp Delivery',
+              `Enter your WhatsApp number for ${eventName} ticket delivery:`,
+              '071 234 5678',
+              '📱'
+            );
             if (phone && phone.trim().length >= 9) {
-              showToast(`📲 Ticket for ${eventName} will be sent via WhatsApp to ${phone} within 2 minutes.`, 3500);
-              setTimeout(() => {
-                showToast(`✅ WhatsApp ticket delivered! Show QR at entrance.`, 3000);
-              }, 2000);
-            } else if (phone) {
-              showToast(`⚠️ Invalid number. Please try again or use print option.`, 2500);
-            } else {
-              showToast(`❌ Delivery cancelled.`, 1500);
+              await showSuccessModal(`📲 Ticket for ${eventName} will be sent via WhatsApp to ${phone} within 2 minutes.`);
+            } else if (phone !== null) {
+              await showErrorModal('Invalid number. Please try again.');
             }
           }
         });
       });
       
-      // Back button restores main kiosk view
       const backBtn = document.getElementById('backToKioskBtn');
       if (backBtn) {
         backBtn.addEventListener('click', () => {
@@ -699,50 +941,18 @@
           if (quickAccess) quickAccess.style.display = 'block';
           if (ticketContainer) ticketContainer.style.display = 'none';
           mainContainer.style.opacity = '1';
-          showToast('🔙 Returned to main kiosk menu', 1500);
         });
       }
       
       mainContainer.style.opacity = '1';
-    }, 200);
-  }
-  
-  // ==================== COLLECT ORDER HANDLER ====================
-  function collectOrderHandler() {
-    showToast('📱 Opening QR scanner... Please present your QR code');
-    const qrCode = prompt('Enter your Order QR Code (or scan):');
-    if (qrCode && qrCode.trim() !== "") {
-      showToast(`✅ Order ${qrCode} found! Ready for pickup. Please show at collection point.`);
-    } else if (qrCode === "") {
-      showToast('⚠️ No QR code entered. Please try again.');
-    }
-  }
-  
-  // ==================== START ORDER (MENU) ====================
-  function startOrderHandler() {
-    showToast('🍺 Opening drinks menu... Redirecting to ordering page');
-    setTimeout(() => {
-      window.location.href = 'kiosk-menu.html';
-    }, 800);
-  }
-  
-  // ==================== QUICK ACCESS BUTTONS (only drinks now) ====================
-  function quickAccessHandler(menu) {
-    showToast(`🍽️ Loading ${menu} menu...`);
-    setTimeout(() => {
-      window.location.href = `kiosk-menu.html?category=${menu}`;
-    }, 500);
+    }, 150);
   }
   
   // ==================== ATTACH EVENT LISTENERS ====================
   document.getElementById('startOrderBtn').addEventListener('click', startOrderHandler);
   document.getElementById('collectOrderBtn').addEventListener('click', collectOrderHandler);
-  const eventBtn = document.getElementById('eventTicketsBtn');
-  if (eventBtn) {
-    eventBtn.addEventListener('click', redirectToEventTickets);
-  }
+  document.getElementById('eventTicketsBtn').addEventListener('click', redirectToEventTickets);
   
-  // Quick Access Buttons (only 3 buttons now)
   document.querySelectorAll('.quick-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const menu = btn.getAttribute('data-menu');
@@ -750,10 +960,10 @@
     });
   });
   
-  // ==================== ANIMATIONS ON LOAD ====================
+  // Animations
   const cards = document.querySelectorAll('.action-card');
   cards.forEach((card, index) => {
-    card.style.animation = `cardFadeIn 0.6s ease forwards ${index * 0.1 + 0.2}s`;
+    card.style.animation = `cardFadeIn 0.5s ease forwards ${index * 0.1 + 0.2}s`;
     card.style.opacity = '0';
     card.style.transform = 'translateY(30px)';
   });
@@ -769,13 +979,12 @@
   `;
   document.head.appendChild(styleSheet);
   
-  // Handle logo image fallback
   const logoImg = document.querySelector('.logo-circle img');
   if (logoImg && logoImg.complete && logoImg.naturalWidth === 0) {
     logoImg.onerror();
   }
   
-  console.log('%c🎟️ RANDS KIOSK — Event Tickets | Print instantly & WhatsApp delivery ready | Daily Specials removed', 'color: #E31B23; font-size: 14px; font-weight: bold;');
+  console.log('%c🎟️ RANDS KIOSK — Beautiful custom modals active!', 'color: #E31B23; font-size: 14px; font-weight: bold;');
 </script>
 </body>
 </html>
