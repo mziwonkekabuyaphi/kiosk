@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Rands Kiosk | Event Tickets & Packages</title>
+<title>Rands Kiosk | Event Tickets & VVIP Tables</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <style>
@@ -21,7 +21,7 @@
   body.light-mode .menu-header, body.light-mode .category-nav { background: rgba(255, 255, 255, 0.95); }
   body.light-mode .ticket-card { background: rgba(255, 255, 255, 0.95); border: 1px solid rgba(227,27,35,0.2); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
   body.light-mode .ticket-type, body.light-mode .ticket-price, body.light-mode .ticket-description, 
-  body.light-mode .features-list li, body.light-mode .quantity-display { color: #1F2937; }
+  body.light-mode .features-list li, body.light-mode .quantity-display { color: white; }  /* forced white in light mode too */
   body.light-mode .cart-sidebar { background: #FFFFFF; }
   
   .tickets-page { min-height: 100vh; position: relative; display: flex; flex-direction: column; }
@@ -56,19 +56,23 @@
   .tickets-container { width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
   .ticket-card { border-radius: 24px; overflow: hidden; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3); transition: all 0.4s ease; position: relative; display: flex; flex-direction: column; cursor: pointer; }
   .ticket-card:hover { transform: translateY(-8px); box-shadow: 0 25px 45px rgba(227, 6, 19, 0.25); }
-  /* Dynamic ticket backgrounds (colored by type) */
   .ticket-card.earlybird { background: linear-gradient(145deg, #1E3A8A, #1E40AF); border: 1px solid rgba(255,255,255,0.25); }
   body.light-mode .ticket-card.earlybird { background: linear-gradient(145deg, #3B82F6, #2563EB); }
   .ticket-card.general { background: linear-gradient(145deg, #0F5C5F, #1E7F6E); border: 1px solid rgba(255,255,200,0.3); }
   body.light-mode .ticket-card.general { background: linear-gradient(145deg, #1C9E8F, #117F6F); }
   .ticket-card.vip { background: linear-gradient(145deg, #800020, #5e0018); border: 1px solid rgba(255,215,0,0.3); }
   body.light-mode .ticket-card.vip { background: linear-gradient(145deg, #9b2c3d, #6a1e2b); }
-  .ticket-card.package { background: linear-gradient(145deg, #E85D04, #F48C06); border: 1px solid rgba(255,200,100,0.4); }
-  body.light-mode .ticket-card.package { background: linear-gradient(145deg, #F77F00, #FC9E2F); }
+  .ticket-card.table { background: linear-gradient(145deg, #E85D04, #F48C06); border: 1px solid rgba(255,200,100,0.4); }
+  body.light-mode .ticket-card.table { background: linear-gradient(145deg, #F77F00, #FC9E2F); }
   .ticket-header { padding: 28px 24px; position: relative; overflow: hidden; }
-  .ticket-type { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; margin-bottom: 8px; letter-spacing: 1px; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
-  .ticket-price { font-size: 2.5rem; font-weight: 800; margin: 15px 0; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
-  .ticket-description { font-size: 0.95rem; line-height: 1.5; opacity: 0.9; margin-top: 10px; color: white; }
+  /* Force white text for ticket type and price */
+  .ticket-type, .ticket-price, .ticket-description {
+    color: white !important;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  }
+  .ticket-type { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; margin-bottom: 8px; letter-spacing: 1px; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+  .ticket-price { font-size: 2.5rem; font-weight: 800; margin: 15px 0; }
+  .ticket-description { font-size: 0.95rem; line-height: 1.5; opacity: 0.9; margin-top: 10px; }
   .ticket-body { padding: 20px 24px; flex: 1; }
   .features-list { list-style: none; }
   .features-list li { padding: 10px 0; border-bottom: 1px dashed rgba(255, 255, 255, 0.2); display: flex; align-items: center; font-size: 0.9rem; color: white; }
@@ -79,7 +83,7 @@
   .quantity-display { font-size: 1.3rem; font-weight: 700; min-width: 50px; text-align: center; color: white; }
   .ticket-footer { padding: 20px 24px 28px; text-align: center; }
   .buy-btn { border: none; padding: 14px 24px; border-radius: 60px; font-weight: 700; font-size: 1rem; cursor: pointer; width: 100%; letter-spacing: 0.5px; transition: all 0.3s ease; }
-  .earlybird .buy-btn, .general .buy-btn, .vip .buy-btn, .package .buy-btn { background: white; color: #1E3A8A; }
+  .earlybird .buy-btn, .general .buy-btn, .vip .buy-btn, .table .buy-btn { background: white; color: #1E3A8A; }
   .buy-btn:hover { transform: scale(1.02); filter: brightness(1.05); }
   .popular-badge { position: absolute; top: 20px; right: -35px; background: #E31B23; color: white; padding: 8px 40px; font-weight: 700; font-size: 0.85rem; transform: rotate(45deg); box-shadow: 0 3px 10px rgba(0,0,0,0.3); z-index: 20; }
   .cart-sidebar { position: fixed; right: 0; top: 0; width: 420px; height: 100vh; z-index: 200; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1); box-shadow: -5px 0 30px rgba(0,0,0,0.5); display: flex; flex-direction: column; overflow-y: auto; background: #111; }
@@ -109,6 +113,7 @@
   .footer { text-align: center; padding: 1.5rem; font-size: 0.7rem; color: #6B7280; }
   @media (max-width: 768px) { .tickets-container { grid-template-columns: 1fr; } .cart-sidebar { width: 100%; } .event-selector { margin: 0 1rem 1rem 1rem; flex-wrap: wrap; } }
   .flying-item { position: fixed; z-index: 1000; font-size: 2rem; pointer-events: none; transition: all 1s cubic-bezier(0.2, 0.9, 0.4, 1.2); filter: drop-shadow(0 0 8px #E31B23); will-change: transform; }
+  .sold-out-tag { display: inline-block; background: rgba(0,0,0,0.7); color: white; padding: 4px 12px; border-radius: 30px; font-size: 0.75rem; font-weight: bold; margin-left: 10px; white-space: nowrap; }
 </style>
 </head>
 <body class="light-mode">
@@ -116,7 +121,9 @@
   <div class="menu-bg"></div>
   <div class="menu-header">
     <div class="logo-area">
+      <!-- Logo with correct path and fallback -->
       <img src="images/rands-logo.png" alt="Rands Kiosk Logo" class="logo-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <div style="display: none;" class="logo-text">🎫 Rands</div>
       <h1>Rands Kiosk | Tickets</h1>
     </div>
     <div class="header-controls">
@@ -126,14 +133,14 @@
   </div>
   <div class="category-nav">
     <button class="category-tab active" data-category="tickets">🎟️ Event Tickets</button>
-    <button class="category-tab" data-category="packages">🍾 Venue Packages</button>
+    <button class="category-tab" data-category="tables">🍾 VVIP Tables</button>
   </div>
   <div class="event-selector" id="eventSelector" style="display: none;">
     <label><i class="fas fa-calendar-alt"></i> Active Event:</label>
     <select id="eventSelect"></select>
   </div>
   <div class="menu-main" id="menuMain"></div>
-  <div class="footer">Rands Kiosk — Secure Your Spot | Tickets sync with Management System</div>
+  <div class="footer">Rands Kiosk — Secure Your Spot | VVIP tables are exclusive & limited to 1 per type</div>
 </div>
 
 <div class="cart-overlay" id="cartOverlay"></div>
@@ -149,19 +156,38 @@
   // ========== STORAGE KEYS ==========
   const EVENTS_KEY = 'rands_events';
   const TICKETS_KEY = 'rands_tickets';
+  const VVIP_SOLD_KEY = 'vvip_tables_sold';
   
   let events = [];
   let selectedEventId = null;
   let cart = [];
+  let vvipSold = {};
   
-  // Venue Packages (always available, not linked to event capacity)
-  const VENUE_PACKAGES = [
-    { id: 'pkg_paradise', name: 'Paradise', price: 10000, emoji: '🍾', desc: 'Luxurious couch • Waiter service • R8,000 Tab • Skip Queue Priority • 15 people', features: ['Private table with couches', 'Dedicated waiter', 'R8,000 Tab', 'Skip the Queue Priority'], hasQuantity: false, classSlug: 'package' },
-    { id: 'pkg_vibe', name: '#See You Vibe', price: 15000, emoji: '🎧', desc: 'Luxury vibe • R13,000 Tab • Skip Queue Priority • 15 people', features: ['Premium lounge area', 'Dedicated host', 'R13,000 Tab', 'Skip the Queue Priority'], hasQuantity: false, classSlug: 'package' },
-    { id: 'pkg_wonderland', name: 'Wonderland', price: 20000, emoji: '✨', desc: 'Ultimate wonderland • R18,000 Tab • VIP parking pass • 15 people', features: ['Private luxury suite', 'Personal concierge', 'R18,000 Tab', 'VIP parking pass'], hasQuantity: false, classSlug: 'package' }
+  function loadVVIPSold() {
+    const stored = localStorage.getItem(VVIP_SOLD_KEY);
+    if (stored) vvipSold = JSON.parse(stored);
+    else vvipSold = {};
+  }
+  function saveVVIPSold() {
+    localStorage.setItem(VVIP_SOLD_KEY, JSON.stringify(vvipSold));
+  }
+  
+  // VVIP Tables (each unique, only 1 available)
+  const VVIP_TABLES = [
+    { id: 'table_paradise', name: 'Paradise Table', price: 10000, emoji: '🍾', desc: 'Luxurious couch • Waiter service • R8,000 Tab • Skip Queue Priority • 15 people', features: ['Private table with couches', 'Dedicated waiter', 'R8,000 Tab', 'Skip the Queue Priority', 'Only 1 table available'], classSlug: 'table', maxQuantity: 1, isTable: true },
+    { id: 'table_vibe', name: '#See You Vibe Table', price: 15000, emoji: '🎧', desc: 'Luxury vibe • R13,000 Tab • Skip Queue Priority • 15 people', features: ['Premium lounge area', 'Dedicated host', 'R13,000 Tab', 'Skip the Queue Priority', 'Only 1 table available'], classSlug: 'table', maxQuantity: 1, isTable: true },
+    { id: 'table_wonderland', name: 'Wonderland Table', price: 20000, emoji: '✨', desc: 'Ultimate wonderland • R18,000 Tab • VIP parking pass • 15 people', features: ['Private luxury suite', 'Personal concierge', 'R18,000 Tab', 'VIP parking pass', 'Only 1 table available'], classSlug: 'table', maxQuantity: 1, isTable: true }
   ];
   
-  // Helper functions
+  function isTableSold(tableId) {
+    return vvipSold[tableId] === true;
+  }
+  
+  function markTableSold(tableId) {
+    vvipSold[tableId] = true;
+    saveVVIPSold();
+  }
+  
   function loadEvents() {
     const stored = localStorage.getItem(EVENTS_KEY);
     if (stored) events = JSON.parse(stored);
@@ -171,8 +197,6 @@
   function saveEvents() {
     localStorage.setItem(EVENTS_KEY, JSON.stringify(events));
   }
-  
-  function loadTickets() { /* not needed for display, but used in checkout */ }
   
   function showToast(msg) {
     const toast = document.getElementById('toast');
@@ -227,8 +251,13 @@
   window.updateQuantity = function(id, delta) {
     const item = cart.find(i => i.id === id);
     if (item) {
-      item.quantity += delta;
-      if (item.quantity <= 0) cart = cart.filter(i => i.id !== id);
+      const newQty = item.quantity + delta;
+      if (newQty <= 0) {
+        cart = cart.filter(i => i.id !== id);
+      } else {
+        if (item.isTable && newQty > 1) return;
+        item.quantity = newQty;
+      }
       updateCartUI();
     }
   };
@@ -240,6 +269,15 @@
   };
   
   function addToCart(product, element, quantity = 1) {
+    if (product.isTable && isTableSold(product.id)) {
+      showToast(`❌ ${product.name} has already been purchased. Only 1 available.`);
+      return;
+    }
+    const existingInCart = cart.find(i => i.id === product.id);
+    if (product.isTable && existingInCart) {
+      showToast(`❌ ${product.name} is already in your cart. Only 1 allowed.`);
+      return;
+    }
     if (element) animateToCart(element, product.emoji || '🎫');
     const existing = cart.find(i => i.id === product.id);
     if (existing) existing.quantity += quantity;
@@ -248,7 +286,6 @@
     showToast(`✓ Added ${quantity} x ${product.name}`);
   }
   
-  // Render event tickets (Early Bird, General, VIP) based on selected event
   function renderEventTickets() {
     if (!selectedEventId) return [];
     const event = events.find(e => e.id === selectedEventId);
@@ -274,20 +311,33 @@
         classSlug: t.classSlug,
         disabled: isSoldOut,
         eventId: event.id,
-        ticketTypeKey: t.key
+        ticketTypeKey: t.key,
+        isTable: false
       };
     }).filter(p => p !== null);
   }
   
-  // Render all products (event tickets + packages) based on selected category
+  function renderVipTables() {
+    return VVIP_TABLES.map(table => {
+      const sold = isTableSold(table.id);
+      return {
+        ...table,
+        disabled: sold,
+        features: sold ? [...table.features, 'SOLD OUT'] : table.features,
+        hasQuantity: false,
+        isTable: true
+      };
+    });
+  }
+  
   let currentCategory = 'tickets';
   function renderAll() {
     const container = document.getElementById('menuMain');
     const eventTickets = (currentCategory === 'tickets' && selectedEventId) ? renderEventTickets() : [];
-    const packages = (currentCategory === 'packages') ? VENUE_PACKAGES : [];
-    const products = [...eventTickets, ...packages];
+    const tables = (currentCategory === 'tables') ? renderVipTables() : [];
+    const products = [...eventTickets, ...tables];
     if (products.length === 0) {
-      container.innerHTML = `<div style="text-align:center;padding:60px;color:var(--text-secondary);"><i class="fas fa-calendar-times"></i><h3>No items available</h3><p>${!selectedEventId ? 'Please select an active event from the dropdown above.' : 'No tickets defined for this event.'}</p></div>`;
+      container.innerHTML = `<div style="text-align:center;padding:60px;color:var(--text-secondary);"><i class="fas fa-calendar-times"></i><h3>No items available</h3><p>${!selectedEventId && currentCategory === 'tickets' ? 'Please select an active event from the dropdown above.' : 'No tables available at the moment.'}</p></div>`;
       return;
     }
     container.innerHTML = `<div class="tickets-container">
@@ -295,7 +345,10 @@
         <div class="ticket-card ${p.classSlug}" data-product-id="${p.id}">
           <div class="ticket-header">
             ${p.name === 'VIP Experience' ? '<div class="popular-badge">POPULAR</div>' : ''}
-            <div class="ticket-type">${p.emoji} ${p.name}</div>
+            <div class="ticket-type">
+              ${p.emoji} ${p.name}
+              ${p.disabled ? '<span class="sold-out-tag">SOLD OUT</span>' : ''}
+            </div>
             <div class="ticket-price">R${p.price.toLocaleString()}</div>
             <p class="ticket-description">${p.desc}</p>
           </div>
@@ -313,14 +366,13 @@
           </div>
           <div class="ticket-footer">
             <button class="buy-btn" data-product-id="${p.id}" ${p.disabled ? 'disabled style="opacity:0.5;"' : ''}>
-              ${p.disabled ? 'Sold Out' : (p.hasQuantity ? 'Add Tickets' : 'Book Now')}
+              ${p.disabled ? 'Sold Out' : (p.hasQuantity ? 'Add Tickets' : 'Book Table')}
             </button>
           </div>
         </div>
       `).join('')}
     </div>`;
     
-    // Attach quantity controls for each product
     document.querySelectorAll('.quantity-selector').forEach(selector => {
       const minus = selector.querySelector('.minus');
       const plus = selector.querySelector('.plus');
@@ -339,7 +391,6 @@
       }
     });
     
-    // Attach buy button events
     document.querySelectorAll('.buy-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -347,8 +398,8 @@
         let product;
         if (currentCategory === 'tickets' && selectedEventId) {
           product = renderEventTickets().find(p => p.id === productId);
-        } else if (currentCategory === 'packages') {
-          product = VENUE_PACKAGES.find(p => p.id === productId);
+        } else if (currentCategory === 'tables') {
+          product = renderVipTables().find(p => p.id === productId);
         }
         if (!product || product.disabled) return;
         const card = btn.closest('.ticket-card');
@@ -362,7 +413,6 @@
     });
   }
   
-  // Populate event selector dropdown
   function populateEventSelector() {
     const activeEvents = events.filter(e => e.status === 'active' || e.status === 'upcoming');
     const selector = document.getElementById('eventSelect');
@@ -385,77 +435,75 @@
     });
   }
   
-  // Checkout: create tickets in localStorage and update event sold counts
   function performCheckout() {
     if (cart.length === 0) { showToast('Cart is empty'); return; }
-    // Load existing tickets
+    
     let allTickets = [];
     const storedTickets = localStorage.getItem(TICKETS_KEY);
     if (storedTickets) allTickets = JSON.parse(storedTickets);
     
-    // For each cart item, generate tickets
     for (const item of cart) {
-      // Check if item is an event ticket (starts with eventId_)
-      const isEventTicket = item.id.includes('_') && events.some(e => item.id.startsWith(e.id + '_'));
-      if (isEventTicket) {
-        const [eventId, ticketTypeKey] = item.id.split('_');
-        const event = events.find(e => e.id === eventId);
-        if (event && event.ticketTypes[ticketTypeKey]) {
-          const ticketType = event.ticketTypes[ticketTypeKey];
-          const newSold = ticketType.sold + item.quantity;
-          if (newSold > ticketType.capacity) {
-            showToast(`Not enough ${item.name} tickets available. Only ${ticketType.capacity - ticketType.sold} left.`, 'error');
-            return;
-          }
-          // Update sold count
-          ticketType.sold = newSold;
-          // Create individual tickets
-          for (let i = 0; i < item.quantity; i++) {
-            const ticketId = `${eventId}_${ticketTypeKey}_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
-            allTickets.push({
-              ticketId: ticketId.toUpperCase(),
-              attendeeName: `Guest ${ticketTypeKey}`,
-              eventName: event.name,
-              ticketType: item.name,
-              checkedIn: false,
-              checkinTime: null,
-              price: item.price
-            });
-          }
-        } else { showToast(`Event data error for ${item.name}`, 'error'); return; }
-      } else {
-        // Venue package: generate tickets with package name
+      if (item.isTable) {
+        if (isTableSold(item.id)) {
+          showToast(`❌ ${item.name} is no longer available.`);
+          return;
+        }
+        markTableSold(item.id);
+        const ticketId = `${item.id}_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
+        allTickets.push({
+          ticketId: ticketId.toUpperCase(),
+          attendeeName: `VVIP Table Buyer`,
+          eventName: 'Rands Cape Town VVIP Experience',
+          ticketType: item.name,
+          checkedIn: false,
+          checkinTime: null,
+          price: item.price
+        });
+      } else if (item.eventId && item.ticketTypeKey) {
+        const event = events.find(e => e.id === item.eventId);
+        if (!event) { showToast(`Event not found for ${item.name}.`); return; }
+        const ticketType = event.ticketTypes[item.ticketTypeKey];
+        if (!ticketType) { showToast(`Ticket type ${item.name} not found.`); return; }
+        const newSold = ticketType.sold + item.quantity;
+        if (newSold > ticketType.capacity) {
+          showToast(`Not enough ${item.name} tickets. Only ${ticketType.capacity - ticketType.sold} left.`);
+          return;
+        }
+        ticketType.sold = newSold;
         for (let i = 0; i < item.quantity; i++) {
-          const ticketId = `${item.id}_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
+          const ticketId = `${item.eventId}_${item.ticketTypeKey}_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
           allTickets.push({
             ticketId: ticketId.toUpperCase(),
-            attendeeName: `Package Guest`,
-            eventName: 'Rands Cape Town Venue Package',
+            attendeeName: `Guest ${item.ticketTypeKey}`,
+            eventName: event.name,
             ticketType: item.name,
             checkedIn: false,
             checkinTime: null,
             price: item.price
           });
         }
+      } else {
+        showToast(`Unknown item: ${item.name}`);
+        return;
       }
     }
-    // Save updated events and tickets
+    
     saveEvents();
     localStorage.setItem(TICKETS_KEY, JSON.stringify(allTickets));
-    // Dispatch storage event so other tabs (scanner, wallet) refresh
     window.dispatchEvent(new StorageEvent('storage', { key: TICKETS_KEY, newValue: JSON.stringify(allTickets) }));
     window.dispatchEvent(new StorageEvent('storage', { key: EVENTS_KEY, newValue: JSON.stringify(events) }));
+    window.dispatchEvent(new StorageEvent('storage', { key: VVIP_SOLD_KEY, newValue: JSON.stringify(vvipSold) }));
     
-    showToast(`✅ Checkout successful! Total: R${cart.reduce((s,i)=>s+i.price*i.quantity,0).toLocaleString()}. Tickets added to wallet.`);
+    const total = cart.reduce((s,i) => s + i.price * i.quantity, 0);
+    showToast(`✅ Checkout successful! Total: R${total.toLocaleString()}. Tickets added to wallet.`);
     cart = [];
     updateCartUI();
     document.getElementById('cartSidebar').classList.remove('open');
     document.getElementById('cartOverlay').classList.remove('open');
-    // Redirect to home page after 2 seconds
+    if (currentCategory === 'tables') renderAll();
     setTimeout(() => { window.location.href = 'index.html'; }, 2000);
   }
   
-  // UI Helpers
   function formatDate(dateString) { return dateString ? new Date(dateString).toLocaleDateString('en-ZA', { year:'numeric', month:'short', day:'numeric' }) : ''; }
   function escapeHtml(t) { if(!t) return ''; const d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
   
@@ -468,7 +516,6 @@
     document.getElementById('checkoutBtn').addEventListener('click', performCheckout);
   }
   
-  // Theme Toggle
   const themeToggle = document.getElementById('themeToggleBtn');
   function setTheme(theme) {
     if (theme === 'light') { document.body.classList.remove('dark-mode'); document.body.classList.add('light-mode'); themeToggle.innerHTML = '<span>☀️</span><span>Light</span>'; localStorage.setItem('kioskTheme', 'light'); }
@@ -478,7 +525,6 @@
   if (savedTheme === 'dark') setTheme('dark'); else setTheme('light');
   themeToggle.addEventListener('click', () => setTheme(document.body.classList.contains('dark-mode') ? 'light' : 'dark'));
   
-  // Category tabs
   document.querySelectorAll('.category-tab').forEach(tab => {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
@@ -488,10 +534,9 @@
     });
   });
   
-  // Initialization
   loadEvents();
+  loadVVIPSold();
   if (events.length === 0) {
-    // Fallback demo event if none exists (so kiosk works out of the box)
     const demoEvent = {
       id: 'evt_demo_001',
       name: 'Rands 11th Birthday',
@@ -501,7 +546,7 @@
       status: 'active',
       imageData: null,
       ticketTypes: {
-        earlyBird: { price: 250, capacity: 200, sold: 45 },
+        earlyBird: { price: 250, capacity: 200, sold: 200 },
         general: { price: 350, capacity: 500, sold: 120 },
         vip: { price: 600, capacity: 100, sold: 30 }
       }
@@ -514,12 +559,15 @@
   setupCartSidebar();
   renderAll();
   
-  // Listen for storage changes from management panel
   window.addEventListener('storage', (e) => {
     if (e.key === EVENTS_KEY) {
       loadEvents();
       populateEventSelector();
       if (currentCategory === 'tickets') renderAll();
+    }
+    if (e.key === VVIP_SOLD_KEY) {
+      loadVVIPSold();
+      if (currentCategory === 'tables') renderAll();
     }
   });
 </script>
