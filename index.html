@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Rands Kiosk">
 <link rel="manifest" href="manifest.json">
-<title>Rands Kiosk | Start Ordering</title>
+<title>Rands Kiosk | Self Check-in & Live Vibe</title>
 <style>
   * {
     margin: 0;
@@ -58,7 +58,7 @@
     100% { transform: rotate(360deg); }
   }
 
-  /* Header with larger circular logo */
+  /* Header */
   .kiosk-header {
     position: relative;
     z-index: 10;
@@ -77,7 +77,6 @@
     gap: 12px;
   }
 
-  /* Bigger circular logo styling */
   .logo-circle {
     width: 70px;
     height: 70px;
@@ -142,7 +141,7 @@
   /* Hero Section */
   .hero-section {
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
     animation: fadeInUp 0.8s ease;
   }
 
@@ -179,7 +178,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 2rem;
-    margin: 2rem 0;
+    margin: 1.5rem 0 2rem 0;
   }
 
   .action-card {
@@ -261,44 +260,164 @@
     transform: scale(1.02);
   }
 
-  /* Quick Access */
-  .quick-access {
+  /* ==================== COOL VIBE SECTION (replaces quick access) ==================== */
+  .vibe-lounge {
     margin-top: 2rem;
-    padding-top: 2rem;
-    border-top: 1px solid rgba(227,27,35,0.2);
+    padding: 1.5rem;
+    background: rgba(10, 10, 10, 0.7);
+    backdrop-filter: blur(12px);
+    border-radius: 64px;
+    border: 1px solid rgba(227,27,35,0.3);
+    transition: all 0.3s ease;
   }
 
-  .quick-title {
-    text-align: center;
-    color: #9CA3AF;
-    font-size: 0.8rem;
-    letter-spacing: 2px;
-    margin-bottom: 1rem;
-  }
-
-  .quick-buttons {
+  .vibe-header {
     display: flex;
-    justify-content: center;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
     gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 0 0.5rem;
+  }
+
+  .vibe-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .vibe-title .pulse-dot {
+    width: 12px;
+    height: 12px;
+    background: #E31B23;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #E31B23;
+    animation: pulseRed 1.4s infinite;
+  }
+
+  @keyframes pulseRed {
+    0% { opacity: 0.4; transform: scale(0.8); }
+    100% { opacity: 1; transform: scale(1.2); }
+  }
+
+  .vibe-title h3 {
+    color: white;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    font-size: 1.2rem;
+  }
+
+  .vibe-badge {
+    background: rgba(227,27,35,0.2);
+    padding: 0.3rem 1rem;
+    border-radius: 40px;
+    font-size: 0.7rem;
+    color: #E31B23;
+    font-weight: 600;
+    backdrop-filter: blur(4px);
+  }
+
+  /* Music visualizer bars */
+  .music-visualizer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 60px;
+    margin-bottom: 1.5rem;
+  }
+
+  .bar {
+    width: 6px;
+    background: linear-gradient(180deg, #E31B23, #FF6B6B);
+    border-radius: 6px;
+    animation: soundWave 1.2s infinite ease-in-out alternate;
+    transition: height 0.2s;
+  }
+
+  .bar:nth-child(1) { height: 20px; animation-delay: 0s; }
+  .bar:nth-child(2) { height: 35px; animation-delay: 0.1s; }
+  .bar:nth-child(3) { height: 55px; animation-delay: 0.2s; }
+  .bar:nth-child(4) { height: 45px; animation-delay: 0.3s; }
+  .bar:nth-child(5) { height: 25px; animation-delay: 0.4s; }
+  .bar:nth-child(6) { height: 50px; animation-delay: 0.5s; }
+  .bar:nth-child(7) { height: 30px; animation-delay: 0.6s; }
+  .bar:nth-child(8) { height: 42px; animation-delay: 0.7s; }
+  .bar:nth-child(9) { height: 22px; animation-delay: 0.8s; }
+  .bar:nth-child(10) { height: 38px; animation-delay: 0.9s; }
+
+  @keyframes soundWave {
+    0% { height: 15px; opacity: 0.5; }
+    100% { height: 55px; opacity: 1; }
+  }
+
+  /* Rotating vibe messages */
+  .vibe-message-container {
+    text-align: center;
+    margin: 1rem 0;
+    padding: 0.8rem;
+    background: rgba(0,0,0,0.5);
+    border-radius: 80px;
+    border-left: 3px solid #E31B23;
+    border-right: 3px solid #E31B23;
+  }
+
+  .vibe-message {
+    font-size: 0.9rem;
+    color: #F0F0F0;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    transition: opacity 0.5s ease;
+    min-height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     flex-wrap: wrap;
   }
 
-  .quick-btn {
-    background: rgba(30, 30, 30, 0.8);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(227,27,35,0.3);
-    padding: 0.6rem 1.2rem;
+  .vibe-message span {
+    background: rgba(227,27,35,0.2);
+    padding: 4px 12px;
     border-radius: 40px;
-    color: #D1D5DB;
     font-size: 0.8rem;
-    cursor: pointer;
-    transition: all 0.2s;
   }
 
-  .quick-btn:hover {
+  /* Interactive Vibe Buttons */
+  .vibe-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .vibe-btn {
+    background: rgba(30, 30, 40, 0.9);
+    border: 1px solid rgba(227,27,35,0.4);
+    padding: 0.6rem 1.2rem;
+    border-radius: 40px;
+    color: #E5E7EB;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    backdrop-filter: blur(4px);
+  }
+
+  .vibe-btn:hover {
     background: #E31B23;
-    color: white;
     border-color: #E31B23;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(227,27,35,0.3);
+  }
+
+  .vibe-btn:active {
+    transform: scale(0.96);
   }
 
   /* Footer */
@@ -356,10 +475,6 @@
     cursor: pointer;
   }
 
-  .install-banner button:hover {
-    background: #B3131A;
-  }
-
   .close-install {
     background: transparent;
     color: #9CA3AF;
@@ -367,7 +482,7 @@
     padding: 0 0.5rem;
   }
 
-  /* ==================== BEAUTIFUL MODAL POPUP ==================== */
+  /* Modal Styles */
   .modal-overlay {
     position: fixed;
     top: 0;
@@ -397,9 +512,8 @@
     width: 90%;
     padding: 2rem;
     border: 1px solid rgba(227,27,35,0.4);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(227,27,35,0.2);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     transform: scale(0.9);
-    transition: transform 0.3s ease;
     animation: modalPop 0.3s ease forwards;
   }
 
@@ -414,101 +528,29 @@
     }
   }
 
-  .modal-icon {
-    font-size: 4rem;
-    text-align: center;
-    margin-bottom: 1rem;
-  }
-
-  .modal-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    text-align: center;
-    color: white;
-    margin-bottom: 0.75rem;
-  }
-
-  .modal-message {
-    color: #9CA3AF;
-    text-align: center;
-    margin-bottom: 1.5rem;
-    line-height: 1.5;
-    font-size: 0.95rem;
-  }
-
-  .modal-input {
-    width: 100%;
-    padding: 1rem;
-    background: #2A2A2A;
-    border: 1px solid #3A3A3A;
-    border-radius: 24px;
-    color: white;
-    font-size: 1rem;
-    margin-bottom: 1rem;
-    transition: border-color 0.2s;
-  }
-
-  .modal-input:focus {
-    outline: none;
-    border-color: #E31B23;
-  }
-
-  .modal-buttons {
-    display: flex;
-    gap: 1rem;
-    margin-top: 0.5rem;
-  }
-
-  .modal-btn {
-    flex: 1;
-    padding: 0.8rem;
-    border-radius: 40px;
-    border: none;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 0.9rem;
-  }
-
-  .modal-btn.primary {
-    background: #E31B23;
-    color: white;
-  }
-
-  .modal-btn.primary:hover {
-    background: #B3131A;
-    transform: scale(1.02);
-  }
-
-  .modal-btn.secondary {
-    background: #2A2A2A;
-    color: #9CA3AF;
-  }
-
-  .modal-btn.secondary:hover {
-    background: #3A3A3A;
-    color: white;
-  }
+  .modal-icon { font-size: 4rem; text-align: center; margin-bottom: 1rem; }
+  .modal-title { font-size: 1.5rem; font-weight: 700; text-align: center; color: white; margin-bottom: 0.75rem; }
+  .modal-message { color: #9CA3AF; text-align: center; margin-bottom: 1.5rem; line-height: 1.5; }
+  .modal-input { width: 100%; padding: 1rem; background: #2A2A2A; border: 1px solid #3A3A3A; border-radius: 24px; color: white; margin-bottom: 1rem; }
+  .modal-input:focus { outline: none; border-color: #E31B23; }
+  .modal-buttons { display: flex; gap: 1rem; margin-top: 0.5rem; }
+  .modal-btn { flex: 1; padding: 0.8rem; border-radius: 40px; border: none; font-weight: 600; cursor: pointer; }
+  .modal-btn.primary { background: #E31B23; color: white; }
+  .modal-btn.primary:hover { background: #B3131A; }
+  .modal-btn.secondary { background: #2A2A2A; color: #9CA3AF; }
+  .modal-btn.secondary:hover { background: #3A3A3A; color: white; }
+  .wristband-preview { background: rgba(0,0,0,0.6); border-radius: 32px; padding: 1rem; margin-top: 1rem; border-left: 4px solid #E31B23; font-family: monospace; font-size: 0.8rem; color: #E5E7EB; }
 
   @media (max-width: 700px) {
     .hero-title { font-size: 2rem; }
     .action-grid { gap: 1rem; }
     .action-card { padding: 1.5rem; }
     .card-icon { font-size: 3rem; }
-    .card-title { font-size: 1.2rem; }
-    .kiosk-main { padding: 1.5rem; }
+    .vibe-lounge { padding: 1rem; }
+    .music-visualizer { gap: 4px; }
+    .bar { width: 4px; }
     .kiosk-header { padding: 1rem; }
     .logo-circle { width: 55px; height: 55px; }
-    .logo-circle img { width: 36px; height: 36px; }
-    .logo-area h1 { font-size: 1.3rem; }
-    .install-banner { font-size: 0.8rem; padding: 0.6rem 1rem; }
-  }
-
-  @media (max-width: 480px) {
-    .hero-title { font-size: 1.5rem; }
-    .action-grid { grid-template-columns: 1fr; }
-    .logo-circle { width: 50px; height: 50px; }
-    .logo-circle img { width: 32px; height: 32px; }
   }
 </style>
 </head>
@@ -530,7 +572,7 @@
   <div class="kiosk-main">
     <div class="hero-section">
       <h1 class="hero-title">Welcome to Rands Kiosk</h1>
-      <p class="hero-subtitle">Tap, order, collect — and grab event tickets! Fast & cashless.</p>
+      <p class="hero-subtitle">Self check-in · Wristband printing · Feel the energy</p>
     </div>
     
     <div class="action-grid">
@@ -541,11 +583,11 @@
         <div class="card-btn">Order Now →</div>
       </div>
       
-      <div class="action-card" id="collectOrderBtn">
-        <div class="card-icon">📱</div>
-        <h2 class="card-title">Collect Order</h2>
-        <p class="card-description">Scan your QR code to pick up your order</p>
-        <div class="card-btn">Scan QR →</div>
+      <div class="action-card" id="selfCheckinBtn">
+        <div class="card-icon">✋🏽✅</div>
+        <h2 class="card-title">Self Check-in</h2>
+        <p class="card-description">Check in yourself instantly & print your event wristband</p>
+        <div class="card-btn">Check-in Now →</div>
       </div>
 
       <div class="action-card" id="eventTicketsBtn">
@@ -556,18 +598,38 @@
       </div>
     </div>
     
-    <div class="quick-access">
-      <div class="quick-title">QUICK ACCESS</div>
-      <div class="quick-buttons">
-        <button class="quick-btn" data-menu="beer">🍺 Beers & Ciders</button>
-        <button class="quick-btn" data-menu="wine">🍷 Wine & Champagne</button>
-        <button class="quick-btn" data-menu="spirits">🥃 Spirits & Cocktails</button>
+    <!-- COOL VIBE LOUNGE - Replaces Quick Access -->
+    <div class="vibe-lounge">
+      <div class="vibe-header">
+        <div class="vibe-title">
+          <div class="pulse-dot"></div>
+          <h3>🎧 LIVE VIBE FEED</h3>
+        </div>
+        <div class="vibe-badge">#SeeYourVibe 🔥</div>
+      </div>
+      
+      <div class="music-visualizer">
+        <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        <div class="bar"></div><div class="bar"></div>
+      </div>
+      
+      <div class="vibe-message-container" id="vibeMessageBox">
+        <div class="vibe-message" id="vibeMessage">
+          🎶 Now playing: Feel the Rhythm · Rands Exclusive Mix
+        </div>
+      </div>
+      
+      <div class="vibe-actions">
+        <button class="vibe-btn" id="moodBtn">✨ Mood Boost</button>
+        <button class="vibe-btn" id="crowdBtn">👥 Crowd Energy</button>
+        <button class="vibe-btn" id="specialBtn">🎁 Surprise Vibe</button>
       </div>
     </div>
   </div>
   
   <div class="kiosk-footer">
-    <span class="footer-brand">Rands Venue Management</span> · #SeeYourVibe · Events & Hospitality
+    <span class="footer-brand">Rands Venue Management</span> · #SeeYourVibe · Self Check-in + Live Energy
   </div>
 </div>
 
@@ -600,10 +662,8 @@
   const closeInstallBtn = document.getElementById('closeInstallBtn');
 
   window.addEventListener('beforeinstallprompt', (e) => {
-    console.log('beforeinstallprompt fired');
     e.preventDefault();
     deferredPrompt = e;
-    
     if (!localStorage.getItem('installDismissed')) {
       installBanner.style.display = 'flex';
     }
@@ -614,12 +674,8 @@
       installBanner.style.display = 'none';
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
-      console.log(`User response to install: ${outcome}`);
       deferredPrompt = null;
-      
-      if (outcome === 'accepted') {
-        showAlertModal('Installed!', 'Rands Kiosk has been added to your home screen. 🎉', '📱');
-      }
+      if (outcome === 'accepted') showAlertModal('Installed!', 'Rands Kiosk added to home screen. 🎉', '📱');
     }
   });
 
@@ -628,20 +684,13 @@
     localStorage.setItem('installDismissed', 'true');
   });
 
-  // FIXED: Removed the slash for GitHub Pages compatibility
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('sw.js')
-        .then(registration => {
-          console.log('Service Worker registered successfully:', registration.scope);
-        })
-        .catch(error => {
-          console.log('Service Worker registration failed:', error);
-        });
+      navigator.serviceWorker.register('sw.js').catch(err => console.log("SW error:", err));
     });
   }
 
-  // ==================== BEAUTIFUL MODAL SYSTEM ====================
+  // ==================== MODAL SYSTEM ====================
   function showModal(options) {
     return new Promise((resolve) => {
       const modal = document.getElementById('beautifulModal');
@@ -654,164 +703,188 @@
       
       iconEl.textContent = options.icon || '✅';
       titleEl.textContent = options.title || 'Notification';
-      messageEl.textContent = options.message || '';
-      
-      if (options.showInput) {
-        inputContainer.style.display = 'block';
-        inputEl.placeholder = options.inputPlaceholder || 'Enter value';
-        inputEl.value = '';
-      } else {
-        inputContainer.style.display = 'none';
-      }
+      messageEl.innerHTML = options.message || '';
+      inputContainer.style.display = options.showInput ? 'block' : 'none';
+      if (options.showInput) inputEl.placeholder = options.inputPlaceholder || 'Enter value';
       
       buttonsContainer.innerHTML = '';
       if (options.buttons === 'confirm-cancel') {
         const cancelBtn = document.createElement('button');
         cancelBtn.className = 'modal-btn secondary';
         cancelBtn.textContent = 'Cancel';
-        cancelBtn.onclick = () => {
-          closeModal();
-          resolve(null);
-        };
-        
+        cancelBtn.onclick = () => { closeModal(); resolve(null); };
         const confirmBtn = document.createElement('button');
         confirmBtn.className = 'modal-btn primary';
         confirmBtn.textContent = options.confirmText || 'Confirm';
-        confirmBtn.onclick = () => {
-          const inputValue = options.showInput ? inputEl.value : true;
-          closeModal();
-          resolve(inputValue);
-        };
-        
+        confirmBtn.onclick = () => { const val = options.showInput ? inputEl.value : true; closeModal(); resolve(val); };
         buttonsContainer.appendChild(cancelBtn);
         buttonsContainer.appendChild(confirmBtn);
       } else {
         const okBtn = document.createElement('button');
         okBtn.className = 'modal-btn primary';
         okBtn.textContent = options.buttonText || 'OK';
-        okBtn.onclick = () => {
-          const inputValue = options.showInput ? inputEl.value : true;
-          closeModal();
-          resolve(inputValue);
-        };
+        okBtn.onclick = () => { const val = options.showInput ? inputEl.value : true; closeModal(); resolve(val); };
         buttonsContainer.appendChild(okBtn);
       }
-      
       modal.classList.add('active');
-      
-      function closeModal() {
-        modal.classList.remove('active');
-      }
+      function closeModal() { modal.classList.remove('active'); }
     });
   }
   
   function showAlertModal(title, message, icon = '📢') {
-    return showModal({
-      title: title,
-      message: message,
-      icon: icon,
-      buttons: 'ok',
-      buttonText: 'OK'
-    });
+    return showModal({ title, message, icon, buttons: 'ok', buttonText: 'OK' });
   }
-  
   function showPromptModal(title, message, placeholder, icon = '✏️') {
-    return showModal({
-      title: title,
-      message: message,
-      icon: icon,
-      showInput: true,
-      inputPlaceholder: placeholder,
-      buttons: 'confirm-cancel',
-      confirmText: 'Submit'
+    return showModal({ title, message, icon, showInput: true, inputPlaceholder: placeholder, buttons: 'confirm-cancel', confirmText: 'Submit' });
+  }
+  function showSuccessModal(msg) { return showAlertModal('Success!', msg, '✅'); }
+  function showErrorModal(msg) { return showAlertModal('Error', msg, '❌'); }
+
+  async function showCheckinWithWristband(guestName, ticketId) {
+    return new Promise((resolve) => {
+      const modal = document.getElementById('beautifulModal');
+      const iconEl = document.getElementById('modalIcon');
+      const titleEl = document.getElementById('modalTitle');
+      const messageEl = document.getElementById('modalMessage');
+      const inputContainer = document.getElementById('modalInputContainer');
+      const buttonsContainer = document.getElementById('modalButtons');
+      inputContainer.style.display = 'none';
+      iconEl.textContent = '🖨️✨';
+      titleEl.textContent = 'Check-in Successful!';
+      const eventDate = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      const wristbandCode = `RNDS-${Math.floor(Math.random() * 10000)}-WB`;
+      messageEl.innerHTML = `
+        <div class="wristband-preview">
+          <strong>🎫 WRISTBAND READY TO PRINT</strong><br>
+          Guest: ${escapeHtml(guestName)}<br>
+          Ticket ID: ${escapeHtml(ticketId)}<br>
+          Access: All Areas · ${eventDate}<br>
+          Code: ${wristbandCode}<br>
+          <span style="font-size:0.7rem; color:#E31B23;">✓ Valid for entry & fast pass</span>
+        </div>
+        <div style="margin-top:12px; font-size:0.8rem; text-align:center;">⚡ Tap print to generate wristband</div>
+      `;
+      buttonsContainer.innerHTML = '';
+      const printBtn = document.createElement('button');
+      printBtn.className = 'modal-btn primary';
+      printBtn.textContent = '🖨️ Print Wristband';
+      printBtn.onclick = () => {
+        simulatePrintWristband(guestName, ticketId, wristbandCode, eventDate);
+        closeModal();
+        resolve(true);
+      };
+      const laterBtn = document.createElement('button');
+      laterBtn.className = 'modal-btn secondary';
+      laterBtn.textContent = 'Later';
+      laterBtn.onclick = () => { closeModal(); resolve(false); };
+      buttonsContainer.appendChild(printBtn);
+      buttonsContainer.appendChild(laterBtn);
+      modal.classList.add('active');
+      function closeModal() { modal.classList.remove('active'); }
     });
   }
-  
-  function showSuccessModal(message) {
-    return showAlertModal('Success!', message, '✅');
-  }
-  
-  function showErrorModal(message) {
-    return showAlertModal('Error', message, '❌');
-  }
-  
-  // ==================== LIVE TIME ====================
-  function updateTime() {
-    const now = new Date();
-    const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    document.getElementById('liveTime').textContent = timeString;
-  }
-  updateTime();
-  setInterval(updateTime, 1000);
-  
-  // ==================== START ORDER - INSTANT REDIRECT ====================
-  function startOrderHandler() {
-    window.location.href = 'kiosk-menu.html';
-  }
-  
-  // ==================== COLLECT ORDER ====================
-  async function collectOrderHandler() {
-    const qrCode = await showPromptModal(
-      'Scan QR Code',
-      'Please scan or enter your order QR code to collect your items.',
-      'Enter QR code (e.g., RNDS-12345)',
-      '📱'
-    );
-    
-    if (qrCode && qrCode.trim() !== "") {
-      await showSuccessModal(`✅ Order ${qrCode} found! Ready for pickup. Please proceed to collection point.`);
-    } else if (qrCode !== null) {
-      await showErrorModal('No QR code entered. Please try again.');
+
+  function simulatePrintWristband(name, ticketId, code, date) {
+    const printWindow = window.open('', '_blank', 'width=500,height=600');
+    if (printWindow) {
+      printWindow.document.write(`
+        <html><head><title>Rands Wristband</title><style>
+          body { font-family: monospace; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin:0; padding:20px; }
+          .card { background: white; border-radius: 32px; padding: 2rem; max-width: 400px; border-left: 12px solid #E31B23; text-align: center; }
+          h2 { color: #E31B23; } .code { background: #f0f0f0; padding: 8px; border-radius: 60px; margin: 1rem 0; }
+          button { background: #E31B23; border: none; padding: 10px 20px; border-radius: 40px; color: white; cursor: pointer; margin-top: 20px; }
+        </style></head>
+        <body><div class="card"><div style="font-size:3rem;">🎟️✨</div><h2>RANDS EVENT ACCESS</h2>
+        <p><strong>Guest:</strong> ${escapeHtml(name)}</p><p><strong>Ticket:</strong> ${escapeHtml(ticketId)}</p>
+        <div class="code">🔹 ${code} 🔹</div><p>Date: ${escapeHtml(date)}</p><hr><button onclick="window.print();setTimeout(()=>window.close(),800);">🖨️ Print Wristband</button>
+        <p style="font-size:0.7rem;">Collect physical band at entry.</p></div><script>setTimeout(()=>{ if(confirm('Ready to print?')) window.print(); },300);<\/script></body></html>
+      `);
+      printWindow.document.close();
+    } else {
+      showAlertModal('Pop-up Blocked', 'Allow pop-ups to print wristband.', '⚠️');
     }
   }
+
+  function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]; }); }
+
+  // ==================== LIVE TIME ====================
+  function updateTime() { document.getElementById('liveTime').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
+  updateTime(); setInterval(updateTime, 1000);
   
-  // ==================== EVENT TICKETS ====================
-  function eventTicketsHandler() {
-    window.location.href = 'kiosk-tickets.html';
+  // ==================== VIBE LOUNGE DYNAMICS ====================
+  const vibeMessages = [
+    "🎶 Now playing: Rands Anthem · Energy Peak 🔥",
+    "💃 Crowd is vibing! 342 people checked in tonight",
+    "✨ Special offer: Buy a drink, get a free shot!",
+    "🎧 DJ set live on main stage — feel the bass!",
+    "🍻 3 mins average wait time at bars!",
+    "🎟️ Tonight's headliner: 30 mins to showtime",
+    "⚡ Self check-in kiosk: 112 wristbands printed",
+    "🎉 VIP area upgrade available at ticket booth"
+  ];
+  let msgIndex = 0;
+  function rotateVibeMessage() {
+    const msgDiv = document.getElementById('vibeMessage');
+    if (msgDiv) {
+      msgDiv.style.opacity = '0';
+      setTimeout(() => {
+        msgIndex = (msgIndex + 1) % vibeMessages.length;
+        msgDiv.innerHTML = vibeMessages[msgIndex];
+        msgDiv.style.opacity = '1';
+      }, 300);
+    }
   }
+  setInterval(rotateVibeMessage, 7000);
   
-  // ==================== QUICK ACCESS ====================
-  function quickAccessHandler(menu) {
-    window.location.href = `kiosk-menu.html?category=${menu}`;
+  // interactive vibe buttons
+  document.getElementById('moodBtn').addEventListener('click', () => {
+    const moods = ["✨ Euphoric mode activated", "🔥 High energy flow", "🎵 Groove intensifies", "💫 Positive vibrations only"];
+    const randomMood = moods[Math.floor(Math.random() * moods.length)];
+    document.getElementById('vibeMessage').innerHTML = `🌈 Mood Boost: ${randomMood} ✨`;
+    showAlertModal("Mood Boost", "Your vibe has been upgraded! Enjoy the energy ⚡", "🌈");
+  });
+  
+  document.getElementById('crowdBtn').addEventListener('click', () => {
+    const crowdCount = Math.floor(Math.random() * 500) + 250;
+    document.getElementById('vibeMessage').innerHTML = `👥 Live crowd: ${crowdCount} people inside · Let's go! 🚀`;
+    showAlertModal("Crowd Energy", `Currently ${crowdCount} party people at Rands! The energy is electric ⚡`, "👥");
+  });
+  
+  document.getElementById('specialBtn').addEventListener('click', () => {
+    const surprises = ["🎁 Free wifi upgrade for all!", "🍾 Complimentary welcome shot at bar 2", "📸 Photo booth discount 50%", "🎫 Double loyalty points tonight"];
+    const surprise = surprises[Math.floor(Math.random() * surprises.length)];
+    document.getElementById('vibeMessage').innerHTML = `🎁 SURPRISE: ${surprise}`;
+    showAlertModal("🎁 Surprise Vibe!", surprise, "🎁");
+  });
+  
+  // ==================== CORE HANDLERS ====================
+  function startOrderHandler() { window.location.href = 'kiosk-menu.html'; }
+  async function selfCheckinHandler() {
+    const guestName = await showPromptModal('Self Check-in', 'Enter your full name', 'e.g., Alex Rivera', '✋🏽');
+    if (!guestName?.trim()) { if (guestName !== null) await showErrorModal('Name required'); return; }
+    const ticketId = await showPromptModal('Ticket Verification', 'Enter ticket ID', 'RNDS-1234', '🎫');
+    if (!ticketId?.trim()) { if (ticketId !== null) await showErrorModal('Ticket ID required'); return; }
+    await showAlertModal('Verifying', `Checking ticket ${ticketId} for ${guestName}...`, '⏳');
+    await new Promise(r => setTimeout(r, 700));
+    await showCheckinWithWristband(guestName.trim(), ticketId.trim());
   }
+  function eventTicketsHandler() { window.location.href = 'kiosk-tickets.html'; }
   
-  // ==================== ATTACH EVENT LISTENERS ====================
   document.getElementById('startOrderBtn').addEventListener('click', startOrderHandler);
-  document.getElementById('collectOrderBtn').addEventListener('click', collectOrderHandler);
+  document.getElementById('selfCheckinBtn').addEventListener('click', selfCheckinHandler);
   document.getElementById('eventTicketsBtn').addEventListener('click', eventTicketsHandler);
   
-  document.querySelectorAll('.quick-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const menu = btn.getAttribute('data-menu');
-      quickAccessHandler(menu);
-    });
-  });
-  
-  // ==================== ANIMATIONS ON LOAD ====================
+  // Card entrance animation
   const cards = document.querySelectorAll('.action-card');
-  cards.forEach((card, index) => {
-    card.style.animation = `cardFadeIn 0.5s ease forwards ${index * 0.1 + 0.2}s`;
+  cards.forEach((card, idx) => {
+    card.style.animation = `cardFadeIn 0.5s ease forwards ${idx * 0.1 + 0.2}s`;
     card.style.opacity = '0';
-    card.style.transform = 'translateY(30px)';
   });
+  const style = document.createElement('style');
+  style.textContent = `@keyframes cardFadeIn { to { opacity: 1; transform: translateY(0); } } .action-card { transform: translateY(30px); }`;
+  document.head.appendChild(style);
   
-  const styleSheet = document.createElement('style');
-  styleSheet.textContent = `
-    @keyframes cardFadeIn {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-  `;
-  document.head.appendChild(styleSheet);
-  
-  const logoImg = document.querySelector('.logo-circle img');
-  if (logoImg && logoImg.complete && logoImg.naturalWidth === 0) {
-    logoImg.onerror();
-  }
-  
-  console.log('%c🎟️ RANDS KIOSK — GitHub Pages Ready! | https://mziwonkekabuyaphi.github.io/kiosk/', 'color: #E31B23; font-size: 14px; font-weight: bold;');
+  console.log('%c✨ RANDS KIOSK — Live Vibe Lounge Activated | Self Check-in + Wristband', 'color:#E31B23; font-size:13px;');
 </script>
 </body>
 </html>
