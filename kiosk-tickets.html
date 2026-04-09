@@ -21,7 +21,7 @@
   body.light-mode .menu-header, body.light-mode .category-nav { background: rgba(255, 255, 255, 0.95); }
   body.light-mode .ticket-card { background: rgba(255, 255, 255, 0.95); border: 1px solid rgba(227,27,35,0.2); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
   body.light-mode .ticket-type, body.light-mode .ticket-price, body.light-mode .ticket-description, 
-  body.light-mode .features-list li, body.light-mode .quantity-display { color: white; }  /* forced white in light mode too */
+  body.light-mode .features-list li, body.light-mode .quantity-display { color: white; }
   body.light-mode .cart-sidebar { background: #FFFFFF; }
   
   .tickets-page { min-height: 100vh; position: relative; display: flex; flex-direction: column; }
@@ -65,11 +65,7 @@
   .ticket-card.table { background: linear-gradient(145deg, #E85D04, #F48C06); border: 1px solid rgba(255,200,100,0.4); }
   body.light-mode .ticket-card.table { background: linear-gradient(145deg, #F77F00, #FC9E2F); }
   .ticket-header { padding: 28px 24px; position: relative; overflow: hidden; }
-  /* Force white text for ticket type and price */
-  .ticket-type, .ticket-price, .ticket-description {
-    color: white !important;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
-  }
+  .ticket-type, .ticket-price, .ticket-description { color: white !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
   .ticket-type { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; margin-bottom: 8px; letter-spacing: 1px; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
   .ticket-price { font-size: 2.5rem; font-weight: 800; margin: 15px 0; }
   .ticket-description { font-size: 0.95rem; line-height: 1.5; opacity: 0.9; margin-top: 10px; }
@@ -121,7 +117,6 @@
   <div class="menu-bg"></div>
   <div class="menu-header">
     <div class="logo-area">
-      <!-- Logo with correct path and fallback -->
       <img src="images/rands-logo.png" alt="Rands Kiosk Logo" class="logo-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
       <div style="display: none;" class="logo-text">🎫 Rands</div>
       <h1>Rands Kiosk | Tickets</h1>
@@ -157,6 +152,7 @@
   const EVENTS_KEY = 'rands_events';
   const TICKETS_KEY = 'rands_tickets';
   const VVIP_SOLD_KEY = 'vvip_tables_sold';
+  const PENDING_ORDER_KEY = 'rands_pending_order';
   
   let events = [];
   let selectedEventId = null;
@@ -172,38 +168,22 @@
     localStorage.setItem(VVIP_SOLD_KEY, JSON.stringify(vvipSold));
   }
   
-  // VVIP Tables (each unique, only 1 available)
   const VVIP_TABLES = [
     { id: 'table_paradise', name: 'Paradise Table', price: 10000, emoji: '🍾', desc: 'Luxurious couch • Waiter service • R8,000 Tab • Skip Queue Priority • 15 people', features: ['Private table with couches', 'Dedicated waiter', 'R8,000 Tab', 'Skip the Queue Priority', 'Only 1 table available'], classSlug: 'table', maxQuantity: 1, isTable: true },
     { id: 'table_vibe', name: '#See You Vibe Table', price: 15000, emoji: '🎧', desc: 'Luxury vibe • R13,000 Tab • Skip Queue Priority • 15 people', features: ['Premium lounge area', 'Dedicated host', 'R13,000 Tab', 'Skip the Queue Priority', 'Only 1 table available'], classSlug: 'table', maxQuantity: 1, isTable: true },
     { id: 'table_wonderland', name: 'Wonderland Table', price: 20000, emoji: '✨', desc: 'Ultimate wonderland • R18,000 Tab • VIP parking pass • 15 people', features: ['Private luxury suite', 'Personal concierge', 'R18,000 Tab', 'VIP parking pass', 'Only 1 table available'], classSlug: 'table', maxQuantity: 1, isTable: true }
   ];
   
-  function isTableSold(tableId) {
-    return vvipSold[tableId] === true;
-  }
-  
-  function markTableSold(tableId) {
-    vvipSold[tableId] = true;
-    saveVVIPSold();
-  }
+  function isTableSold(tableId) { return vvipSold[tableId] === true; }
+  function markTableSold(tableId) { vvipSold[tableId] = true; saveVVIPSold(); }
   
   function loadEvents() {
     const stored = localStorage.getItem(EVENTS_KEY);
     if (stored) events = JSON.parse(stored);
     else events = [];
   }
-  
-  function saveEvents() {
-    localStorage.setItem(EVENTS_KEY, JSON.stringify(events));
-  }
-  
-  function showToast(msg) {
-    const toast = document.getElementById('toast');
-    toast.textContent = msg;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 2500);
-  }
+  function saveEvents() { localStorage.setItem(EVENTS_KEY, JSON.stringify(events)); }
+  function showToast(msg) { const toast = document.getElementById('toast'); toast.textContent = msg; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2500); }
   
   function animateToCart(element, emoji) {
     const rect = element.getBoundingClientRect();
@@ -228,10 +208,7 @@
     document.getElementById('cartPrice').textContent = `R${subtotal.toLocaleString()}`;
     document.getElementById('cartTotal').textContent = `R${subtotal.toLocaleString()}`;
     const cartItemsDiv = document.getElementById('cartItems');
-    if (cart.length === 0) {
-      cartItemsDiv.innerHTML = '<div style="text-align:center;padding:2rem;color:#6B7280;">No items selected</div>';
-      return;
-    }
+    if (cart.length === 0) { cartItemsDiv.innerHTML = '<div style="text-align:center;padding:2rem;color:#6B7280;">No items selected</div>'; return; }
     cartItemsDiv.innerHTML = cart.map(item => `
       <div class="cart-item">
         <div class="cart-item-info">
@@ -239,11 +216,11 @@
           <div class="cart-item-price">R${item.price.toLocaleString()} each</div>
         </div>
         <div class="cart-item-qty">
-          <button class="qty-control" onclick="updateQuantity('${item.id}', -1)">-</button>
+          <button class="qty-control" onclick="window.updateQuantity('${item.id}', -1)">-</button>
           <span>${item.quantity}</span>
-          <button class="qty-control" onclick="updateQuantity('${item.id}', 1)">+</button>
+          <button class="qty-control" onclick="window.updateQuantity('${item.id}', 1)">+</button>
         </div>
-        <button style="background:none;border:none;color:#9CA3AF;cursor:pointer;font-size:1.2rem;" onclick="removeItem('${item.id}')">✕</button>
+        <button style="background:none;border:none;color:#9CA3AF;cursor:pointer;font-size:1.2rem;" onclick="window.removeItem('${item.id}')">✕</button>
       </div>
     `).join('');
   }
@@ -252,32 +229,17 @@
     const item = cart.find(i => i.id === id);
     if (item) {
       const newQty = item.quantity + delta;
-      if (newQty <= 0) {
-        cart = cart.filter(i => i.id !== id);
-      } else {
-        if (item.isTable && newQty > 1) return;
-        item.quantity = newQty;
-      }
+      if (newQty <= 0) cart = cart.filter(i => i.id !== id);
+      else { if (item.isTable && newQty > 1) return; item.quantity = newQty; }
       updateCartUI();
     }
   };
-  
-  window.removeItem = function(id) {
-    cart = cart.filter(i => i.id !== id);
-    updateCartUI();
-    showToast('Item removed');
-  };
+  window.removeItem = function(id) { cart = cart.filter(i => i.id !== id); updateCartUI(); showToast('Item removed'); };
   
   function addToCart(product, element, quantity = 1) {
-    if (product.isTable && isTableSold(product.id)) {
-      showToast(`❌ ${product.name} has already been purchased. Only 1 available.`);
-      return;
-    }
+    if (product.isTable && isTableSold(product.id)) { showToast(`❌ ${product.name} has already been purchased. Only 1 available.`); return; }
     const existingInCart = cart.find(i => i.id === product.id);
-    if (product.isTable && existingInCart) {
-      showToast(`❌ ${product.name} is already in your cart. Only 1 allowed.`);
-      return;
-    }
+    if (product.isTable && existingInCart) { showToast(`❌ ${product.name} is already in your cart. Only 1 allowed.`); return; }
     if (element) animateToCart(element, product.emoji || '🎫');
     const existing = cart.find(i => i.id === product.id);
     if (existing) existing.quantity += quantity;
@@ -312,23 +274,13 @@
         disabled: isSoldOut,
         eventId: event.id,
         ticketTypeKey: t.key,
-        isTable: false
+        isTable: false,
+        eventName: event.name
       };
     }).filter(p => p !== null);
   }
   
-  function renderVipTables() {
-    return VVIP_TABLES.map(table => {
-      const sold = isTableSold(table.id);
-      return {
-        ...table,
-        disabled: sold,
-        features: sold ? [...table.features, 'SOLD OUT'] : table.features,
-        hasQuantity: false,
-        isTable: true
-      };
-    });
-  }
+  function renderVipTables() { return VVIP_TABLES.map(table => ({ ...table, disabled: isTableSold(table.id), features: isTableSold(table.id) ? [...table.features, 'SOLD OUT'] : table.features, hasQuantity: false, isTable: true })); }
   
   let currentCategory = 'tickets';
   function renderAll() {
@@ -336,78 +288,36 @@
     const eventTickets = (currentCategory === 'tickets' && selectedEventId) ? renderEventTickets() : [];
     const tables = (currentCategory === 'tables') ? renderVipTables() : [];
     const products = [...eventTickets, ...tables];
-    if (products.length === 0) {
-      container.innerHTML = `<div style="text-align:center;padding:60px;color:var(--text-secondary);"><i class="fas fa-calendar-times"></i><h3>No items available</h3><p>${!selectedEventId && currentCategory === 'tickets' ? 'Please select an active event from the dropdown above.' : 'No tables available at the moment.'}</p></div>`;
-      return;
-    }
-    container.innerHTML = `<div class="tickets-container">
-      ${products.map(p => `
-        <div class="ticket-card ${p.classSlug}" data-product-id="${p.id}">
-          <div class="ticket-header">
-            ${p.name === 'VIP Experience' ? '<div class="popular-badge">POPULAR</div>' : ''}
-            <div class="ticket-type">
-              ${p.emoji} ${p.name}
-              ${p.disabled ? '<span class="sold-out-tag">SOLD OUT</span>' : ''}
-            </div>
-            <div class="ticket-price">R${p.price.toLocaleString()}</div>
-            <p class="ticket-description">${p.desc}</p>
-          </div>
-          <div class="ticket-body">
-            <ul class="features-list">
-              ${p.features.map(f => `<li><span class="feature-icon"><i class="fas ${f.includes('SOLD') ? 'fa-times-circle' : 'fa-check-circle'}"></i></span> ${f}</li>`).join('')}
-            </ul>
-            ${p.hasQuantity && !p.disabled ? `
-              <div class="quantity-selector" data-product-id="${p.id}">
-                <button class="quantity-btn minus">−</button>
-                <span class="quantity-display">1</span>
-                <button class="quantity-btn plus">+</button>
-              </div>
-            ` : ''}
-          </div>
-          <div class="ticket-footer">
-            <button class="buy-btn" data-product-id="${p.id}" ${p.disabled ? 'disabled style="opacity:0.5;"' : ''}>
-              ${p.disabled ? 'Sold Out' : (p.hasQuantity ? 'Add Tickets' : 'Book Table')}
-            </button>
-          </div>
+    if (products.length === 0) { container.innerHTML = `<div style="text-align:center;padding:60px;color:#6B7280;"><i class="fas fa-calendar-times"></i><h3>No items available</h3><p>${!selectedEventId && currentCategory === 'tickets' ? 'Please select an active event from the dropdown above.' : 'No tables available at the moment.'}</p></div>`; return; }
+    container.innerHTML = `<div class="tickets-container">${products.map(p => `
+      <div class="ticket-card ${p.classSlug}" data-product-id="${p.id}">
+        <div class="ticket-header">${p.name === 'VIP Experience' ? '<div class="popular-badge">POPULAR</div>' : ''}
+          <div class="ticket-type">${p.emoji} ${p.name}${p.disabled ? '<span class="sold-out-tag">SOLD OUT</span>' : ''}</div>
+          <div class="ticket-price">R${p.price.toLocaleString()}</div>
+          <p class="ticket-description">${p.desc}</p>
         </div>
-      `).join('')}
-    </div>`;
+        <div class="ticket-body"><ul class="features-list">${p.features.map(f => `<li><span class="feature-icon"><i class="fas ${f.includes('SOLD') ? 'fa-times-circle' : 'fa-check-circle'}"></i></span> ${f}</li>`).join('')}</ul>
+          ${p.hasQuantity && !p.disabled ? `<div class="quantity-selector" data-product-id="${p.id}"><button class="quantity-btn minus">−</button><span class="quantity-display">1</span><button class="quantity-btn plus">+</button></div>` : ''}
+        </div>
+        <div class="ticket-footer"><button class="buy-btn" data-product-id="${p.id}" ${p.disabled ? 'disabled style="opacity:0.5;"' : ''}>${p.disabled ? 'Sold Out' : (p.hasQuantity ? 'Add Tickets' : 'Book Table')}</button></div>
+      </div>`).join('')}</div>`;
     
     document.querySelectorAll('.quantity-selector').forEach(selector => {
-      const minus = selector.querySelector('.minus');
-      const plus = selector.querySelector('.plus');
-      const display = selector.querySelector('.quantity-display');
+      const minus = selector.querySelector('.minus'), plus = selector.querySelector('.plus'), display = selector.querySelector('.quantity-display');
       if (minus && plus && display) {
-        minus.addEventListener('click', (e) => {
-          e.stopPropagation();
-          let val = parseInt(display.textContent);
-          if (val > 1) display.textContent = val - 1;
-        });
-        plus.addEventListener('click', (e) => {
-          e.stopPropagation();
-          let val = parseInt(display.textContent);
-          if (val < 50) display.textContent = val + 1;
-        });
+        minus.addEventListener('click', (e) => { e.stopPropagation(); let val = parseInt(display.textContent); if (val > 1) display.textContent = val - 1; });
+        plus.addEventListener('click', (e) => { e.stopPropagation(); let val = parseInt(display.textContent); if (val < 50) display.textContent = val + 1; });
       }
     });
-    
     document.querySelectorAll('.buy-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         const productId = btn.dataset.productId;
-        let product;
-        if (currentCategory === 'tickets' && selectedEventId) {
-          product = renderEventTickets().find(p => p.id === productId);
-        } else if (currentCategory === 'tables') {
-          product = renderVipTables().find(p => p.id === productId);
-        }
+        let product = (currentCategory === 'tickets' && selectedEventId) ? renderEventTickets().find(p => p.id === productId) : (currentCategory === 'tables' ? renderVipTables().find(p => p.id === productId) : null);
         if (!product || product.disabled) return;
         const card = btn.closest('.ticket-card');
         let quantity = 1;
-        if (product.hasQuantity) {
-          const qtyDisplay = card.querySelector('.quantity-display');
-          if (qtyDisplay) quantity = parseInt(qtyDisplay.textContent);
-        }
+        if (product.hasQuantity) { const qtyDisplay = card.querySelector('.quantity-display'); if (qtyDisplay) quantity = parseInt(qtyDisplay.textContent); }
         addToCart(product, card, quantity);
       });
     });
@@ -417,91 +327,40 @@
     const activeEvents = events.filter(e => e.status === 'active' || e.status === 'upcoming');
     const selector = document.getElementById('eventSelect');
     const container = document.getElementById('eventSelector');
-    if (activeEvents.length === 0) {
-      container.style.display = 'none';
-      selectedEventId = null;
-      if (currentCategory === 'tickets') renderAll();
-      return;
-    }
+    if (activeEvents.length === 0) { container.style.display = 'none'; selectedEventId = null; if (currentCategory === 'tickets') renderAll(); return; }
     container.style.display = 'flex';
     selector.innerHTML = activeEvents.map(e => `<option value="${e.id}" ${selectedEventId === e.id ? 'selected' : ''}>${escapeHtml(e.name)} (${formatDate(e.date)})</option>`).join('');
-    if (!selectedEventId || !activeEvents.find(e => e.id === selectedEventId)) {
-      selectedEventId = activeEvents[0].id;
-      selector.value = selectedEventId;
-    }
-    selector.addEventListener('change', (e) => {
-      selectedEventId = e.target.value;
-      if (currentCategory === 'tickets') renderAll();
-    });
+    if (!selectedEventId || !activeEvents.find(e => e.id === selectedEventId)) { selectedEventId = activeEvents[0].id; selector.value = selectedEventId; }
+    selector.addEventListener('change', (e) => { selectedEventId = e.target.value; if (currentCategory === 'tickets') renderAll(); });
   }
   
   function performCheckout() {
     if (cart.length === 0) { showToast('Cart is empty'); return; }
     
-    let allTickets = [];
-    const storedTickets = localStorage.getItem(TICKETS_KEY);
-    if (storedTickets) allTickets = JSON.parse(storedTickets);
-    
-    for (const item of cart) {
-      if (item.isTable) {
-        if (isTableSold(item.id)) {
-          showToast(`❌ ${item.name} is no longer available.`);
-          return;
-        }
-        markTableSold(item.id);
-        const ticketId = `${item.id}_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
-        allTickets.push({
-          ticketId: ticketId.toUpperCase(),
-          attendeeName: `VVIP Table Buyer`,
-          eventName: 'Rands Cape Town VVIP Experience',
-          ticketType: item.name,
-          checkedIn: false,
-          checkinTime: null,
-          price: item.price
-        });
-      } else if (item.eventId && item.ticketTypeKey) {
-        const event = events.find(e => e.id === item.eventId);
-        if (!event) { showToast(`Event not found for ${item.name}.`); return; }
-        const ticketType = event.ticketTypes[item.ticketTypeKey];
-        if (!ticketType) { showToast(`Ticket type ${item.name} not found.`); return; }
-        const newSold = ticketType.sold + item.quantity;
-        if (newSold > ticketType.capacity) {
-          showToast(`Not enough ${item.name} tickets. Only ${ticketType.capacity - ticketType.sold} left.`);
-          return;
-        }
-        ticketType.sold = newSold;
-        for (let i = 0; i < item.quantity; i++) {
-          const ticketId = `${item.eventId}_${item.ticketTypeKey}_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
-          allTickets.push({
-            ticketId: ticketId.toUpperCase(),
-            attendeeName: `Guest ${item.ticketTypeKey}`,
-            eventName: event.name,
-            ticketType: item.name,
-            checkedIn: false,
-            checkinTime: null,
-            price: item.price
-          });
-        }
-      } else {
-        showToast(`Unknown item: ${item.name}`);
-        return;
-      }
-    }
-    
-    saveEvents();
-    localStorage.setItem(TICKETS_KEY, JSON.stringify(allTickets));
-    window.dispatchEvent(new StorageEvent('storage', { key: TICKETS_KEY, newValue: JSON.stringify(allTickets) }));
-    window.dispatchEvent(new StorageEvent('storage', { key: EVENTS_KEY, newValue: JSON.stringify(events) }));
-    window.dispatchEvent(new StorageEvent('storage', { key: VVIP_SOLD_KEY, newValue: JSON.stringify(vvipSold) }));
+    // Save pending order to localStorage for payment page
+    const pendingOrder = {
+      items: cart.map(item => ({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        emoji: item.emoji,
+        isTable: item.isTable || false,
+        eventId: item.eventId,
+        ticketTypeKey: item.ticketTypeKey,
+        eventName: item.eventName
+      })),
+      totalAmount: cart.reduce((s, i) => s + i.price * i.quantity, 0),
+      timestamp: Date.now()
+    };
+    localStorage.setItem(PENDING_ORDER_KEY, JSON.stringify(pendingOrder));
     
     const total = cart.reduce((s,i) => s + i.price * i.quantity, 0);
-    showToast(`✅ Checkout successful! Total: R${total.toLocaleString()}. Tickets added to wallet.`);
-    cart = [];
-    updateCartUI();
-    document.getElementById('cartSidebar').classList.remove('open');
-    document.getElementById('cartOverlay').classList.remove('open');
-    if (currentCategory === 'tables') renderAll();
-    setTimeout(() => { window.location.href = 'index.html'; }, 2000);
+    showToast(`✅ Redirecting to payment... Total: R${total.toLocaleString()}`);
+    
+    setTimeout(() => { 
+      window.location.href = 'kiosk-payment.html'; 
+    }, 1500);
   }
   
   function formatDate(dateString) { return dateString ? new Date(dateString).toLocaleDateString('en-ZA', { year:'numeric', month:'short', day:'numeric' }) : ''; }
@@ -537,21 +396,7 @@
   loadEvents();
   loadVVIPSold();
   if (events.length === 0) {
-    const demoEvent = {
-      id: 'evt_demo_001',
-      name: 'Rands 11th Birthday',
-      date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
-      time: '18:00',
-      location: 'Rands Cape Town',
-      status: 'active',
-      imageData: null,
-      ticketTypes: {
-        earlyBird: { price: 250, capacity: 200, sold: 200 },
-        general: { price: 350, capacity: 500, sold: 120 },
-        vip: { price: 600, capacity: 100, sold: 30 }
-      }
-    };
-    events = [demoEvent];
+    events = [{ id: 'evt_demo_001', name: 'Rands 11th Birthday', date: new Date(Date.now() + 86400000).toISOString().split('T')[0], time: '18:00', location: 'Rands Cape Town', status: 'active', imageData: null, ticketTypes: { earlyBird: { price: 250, capacity: 200, sold: 200 }, general: { price: 350, capacity: 500, sold: 120 }, vip: { price: 600, capacity: 100, sold: 30 } } }];
     saveEvents();
   }
   selectedEventId = events.find(e => e.status === 'active')?.id || events[0]?.id;
@@ -560,15 +405,8 @@
   renderAll();
   
   window.addEventListener('storage', (e) => {
-    if (e.key === EVENTS_KEY) {
-      loadEvents();
-      populateEventSelector();
-      if (currentCategory === 'tickets') renderAll();
-    }
-    if (e.key === VVIP_SOLD_KEY) {
-      loadVVIPSold();
-      if (currentCategory === 'tables') renderAll();
-    }
+    if (e.key === EVENTS_KEY) { loadEvents(); populateEventSelector(); if (currentCategory === 'tickets') renderAll(); }
+    if (e.key === VVIP_SOLD_KEY) { loadVVIPSold(); if (currentCategory === 'tables') renderAll(); }
   });
 </script>
 </body>
