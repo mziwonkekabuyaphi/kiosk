@@ -337,25 +337,61 @@
   function performCheckout() {
     if (cart.length === 0) { showToast('Cart is empty'); return; }
     
-    // Save pending order to localStorage for payment page
+    // ========== SAVE TO LOCALSTORAGE FOR PAYMENT PAGE ==========
+    // This ensures the payment page shows the correct prices
+    const selectedEvent = events.find(e => e.id === selectedEventId);
+    
     const pendingOrder = {
-      items: cart.map(item => ({
+      event: selectedEvent ? {
+        id: selectedEvent.id,
+        name: selectedEvent.name,
+        date: selectedEvent.date,
+        location: selectedEvent.location,
+        time: selectedEvent.time
+      } : null,
+      ticketQuantities: {
+        early: 0,
+        general: 0,
+        vip: 0
+      },
+      tableItems: [],
+      totalAmount: 0,
+      cartItems: cart.map(item => ({
         id: item.id,
         name: item.name,
         price: item.price,
         quantity: item.quantity,
         emoji: item.emoji,
         isTable: item.isTable || false,
-        eventId: item.eventId,
         ticketTypeKey: item.ticketTypeKey,
-        eventName: item.eventName
+        eventId: item.eventId
       })),
-      totalAmount: cart.reduce((s, i) => s + i.price * i.quantity, 0),
       timestamp: Date.now()
     };
+    
+    // Calculate ticket quantities from cart
+    cart.forEach(item => {
+      if (!item.isTable) {
+        if (item.name === 'Early Bird') pendingOrder.ticketQuantities.early += item.quantity;
+        else if (item.name === 'General Admission') pendingOrder.ticketQuantities.general += item.quantity;
+        else if (item.name === 'VIP Experience') pendingOrder.ticketQuantities.vip += item.quantity;
+      } else {
+        pendingOrder.tableItems.push({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          emoji: item.emoji
+        });
+      }
+    });
+    
+    pendingOrder.totalAmount = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+    
+    // Save to localStorage
     localStorage.setItem(PENDING_ORDER_KEY, JSON.stringify(pendingOrder));
     
-    const total = cart.reduce((s,i) => s + i.price * i.quantity, 0);
+    const total = pendingOrder.totalAmount;
     showToast(`✅ Redirecting to payment... Total: R${total.toLocaleString()}`);
     
     setTimeout(() => { 
