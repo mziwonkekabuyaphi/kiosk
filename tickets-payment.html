@@ -611,7 +611,7 @@
                 { id: 'general', name: 'General Admission', price: 120.00 },
                 { id: 'vip', name: 'VIP Experience', price: 250.00 }
             ],
-            ticketQuantities: { early: 2, general: 0, vip: 0 },
+            ticketQuantities: { early: 0, general: 0, vip: 0 },
             
             walletId: '',
             selectedMethod: 'wallet',
@@ -630,7 +630,9 @@
             
             showConfirmation: false,
             showRegistrationModal: false,
-            redirectTimer: null
+            redirectTimer: null,
+            
+            eventName: ''
         },
         computed: {
             totalTickets() {
@@ -660,7 +662,50 @@
                 return this.walletId.replace(/\s/g, '');
             }
         },
+        mounted() {
+            // Load ticket data from localStorage
+            this.loadTicketDataFromStorage();
+        },
         methods: {
+            loadTicketDataFromStorage() {
+                try {
+                    const storedData = localStorage.getItem('kiosk_ticket_payment');
+                    
+                    if (storedData) {
+                        const paymentData = JSON.parse(storedData);
+                        
+                        // Load ticket quantities
+                        if (paymentData.ticketQuantities) {
+                            this.ticketQuantities = paymentData.ticketQuantities;
+                        }
+                        
+                        // Load event details
+                        if (paymentData.event) {
+                            this.selectedEvent = paymentData.event;
+                        }
+                        
+                        // Load total amount for validation
+                        if (paymentData.totalAmount) {
+                            console.log('Loaded total amount: R', paymentData.totalAmount);
+                        }
+                        
+                        // Optional: Clear the stored data after loading to prevent reuse
+                        // localStorage.removeItem('kiosk_ticket_payment');
+                        
+                        console.log('Ticket data loaded from localStorage:', this.ticketQuantities);
+                        console.log('Total tickets:', this.totalTickets);
+                        console.log('Total amount:', this.totalAmount);
+                    } else {
+                        console.warn('No ticket data found in localStorage. Using defaults (0 tickets).');
+                        // Show a message to the user
+                        this.requestError = 'No ticket selection found. Please go back and select tickets.';
+                    }
+                } catch (error) {
+                    console.error('Error loading ticket data:', error);
+                    this.requestError = 'Error loading ticket information. Please try again.';
+                }
+            },
+            
             formatPrice(price) {
                 return price.toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             },
@@ -675,6 +720,11 @@
             sendPaymentRequest() {
                 if (!this.isWalletIdValid) {
                     this.requestError = 'Please enter a valid wallet ID (10-15 digit phone number)';
+                    return;
+                }
+                
+                if (this.totalTickets === 0) {
+                    this.requestError = 'No tickets selected. Please go back and select tickets.';
                     return;
                 }
                 
@@ -709,6 +759,9 @@
                             this.waitingForApproval = false;
                             this.paymentCompleted = true;
                             this.showConfirmation = true;
+                            
+                            // Clear the stored ticket data after successful payment
+                            localStorage.removeItem('kiosk_ticket_payment');
                             
                             this.redirectTimer = setTimeout(() => {
                                 window.location.href = 'index.html';
@@ -802,10 +855,11 @@
                 if (this.waitingForApproval) {
                     if (confirm('Cancel pending payment and go back?')) {
                         this.cancelWaiting();
+                        window.location.href = 'kiosk-tick.html';
                     }
                 } else {
-                    if (confirm('Return to event selection?')) {
-                        // Would navigate back in real app
+                    if (confirm('Return to ticket selection?')) {
+                        window.location.href = 'kiosk-tick.html';
                     }
                 }
             }
